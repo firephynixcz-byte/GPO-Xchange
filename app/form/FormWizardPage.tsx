@@ -83,8 +83,8 @@ export default function FormWizardPage() {
 
           {/* เนื้อหาฟอร์มแต่ละ Step */}
           <div className="min-h-[60vh]">
-            {/*{step === 1 && <Step1Info next={nextStep} updateData={setFormData} />}
-            {step === 2 && <Step2Items next={nextStep} back={prevStep} updateData={setFormData} />}
+            {step === 1 && <Step1Info next={nextStep} updateData={setFormData} />}
+            {/*{step === 2 && <Step2Items next={nextStep} back={prevStep} updateData={setFormData} />}
             {step === 3 && <Step3Reason next={nextStep} back={prevStep} updateData={setFormData} />}
             {step === 4 && <Step4Sign next={nextStep} back={prevStep} updateData={setFormData} />}
             {step === 5 && <ReviewPage back={prevStep} data={formData} />}
