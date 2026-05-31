@@ -1,6 +1,5 @@
 'use client';
-
-import FormWizardPage from './FormWizardPage';
+import FormWizardPage from '../../app/form/FormWizardPage'; 
 
 export default function Page() {
   return <FormWizardPage />;
