@@ -2,30 +2,31 @@
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-teal-100 font-sarabun">
+    <div className="min-h-screen bg-teal-100 font-sans">
       
       {/* 1. FIXED TOP HEADER */}
-<header className="fixed top-0 left-0 w-full bg-white/85 backdrop-blur-lg border-b border-teal-100 z-50">
-  <div className="max-w-[980px] mx-auto h-[48px] px-4 flex items-center justify-between">
-    <div className="flex items-center gap-2">
-      <span className="bg-gradient-to-br from-teal-800 to-teal-600 text-white font-black text-[12px] px-[10px] py-[4px] rounded-full shadow-[0_2px_8px_rgba(13,148,136,0.3)] tracking-wide">
-        GPO
-      </span>
-      <span className="text-teal-950 font-black text-sm tracking-wide hidden sm:block">
-        องค์การเภสัชกรรม สาขาภาคใต้
-      </span>
-    </div>
-  </div>
-</header>
+      <header className="fixed top-1 left-0 w-full bg-white/85 backdrop-blur-lg border-b border-teal-100 z-50">
+        <div className="max-w-[1200px] mx-auto h-[48px] px-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="bg-gradient-to-br from-teal-800 to-teal-600 text-white font-black text-[12px] px-[10px] py-[4px] rounded-full shadow-[0_2px_8px_rgba(13,148,136,0.3)] tracking-wide">
+              GPO
+            </span>
+            <span className="text-teal-950 font-black text-sm tracking-wide hidden sm:block">
+              องค์การเภสัชกรรม สาขาภาคใต้
+            </span>
+          </div>
+        </div>
+      </header>
 
       {/* 2. MAIN CONTENT */}
-      <main className="w-full px-6 py-10 pt-24 pb-16">
-        <div className="max-w-3xl mx-auto space-y-8">
+      <main className="w-full px-20 py-10 pt-20 pb-16">
+        <div className="max-w-5xl mx-auto space-y-8">
           
           {/* Hero Section */}
-          <div className="bg-gradient-to-r from-teal-600 to-teal-400 rounded-[2rem] p-8 md:p-12 text-center text-white shadow-2xl mb-10 border-b-4 border-teal-500/20">
-            <h1 className="text-3xl md:text-4xl font-black mb-4 leading-tight drop-shadow-md">GPO XCHANGE PORTAL PLATFORM</h1>
-            <p className="text-teal-50 text-sm md:text-base mb-8 opacity-95">ระบบรับคืนและแลกเปลี่ยนสินค้า แบบ One stop service พร้อม Tracking systems</p>
+          <div className="bg-gradient-to-r from-green-700 to-blue-600 p-12 rounded-[2.5rem] text-center text-white shadow-2xl">
+
+  <h1 className="text-5xl font-black mb-4">GPO XCHANGE PORTAL PLATFORM</h1>
+  <p className="text-lg opacity-90 mb-6">ระบบรับคืนและแลกเปลี่ยนสินค้า แบบ One stop service พร้อม Tracking systems</p>
             <div className="flex flex-wrap justify-center gap-3">
               <span className="bg-white/20 backdrop-blur px-4 py-2 rounded-full text-xs font-medium flex items-center gap-2 border border-white/20">🏥 <span>รองรับทุกหน่วยงาน</span></span>
               <span className="bg-white/20 backdrop-blur px-4 py-2 rounded-full text-xs font-medium flex items-center gap-2 border border-white/20">⚡ <span>ติดตามแบบ Real-time</span></span>
@@ -34,33 +35,33 @@ export default function HomePage() {
           </div>
 
           {/* ส่วนของลูกค้า */}
-          <section className="bg-white p-8 rounded-3xl shadow-sm border border-teal-200 mb-8">
-            <h2 className="text-sm font-black text-teal-950 mb-6 flex items-center gap-2 uppercase tracking-wider">🏠 บริการสำหรับลูกค้า</h2>
+          <section className="bg-white p-10 rounded-3xl shadow-sm border border-teal-200 mb-8">
+            <h2 className="text-base font-black text-teal-950 mb-6 flex items-center gap-2 uppercase tracking-wider">🏠 ส่วนของลูกค้า (Customers)</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <a href="/status" className="group bg-teal-50 p-5 rounded-2xl border border-teal-100 hover:border-teal-400 shadow-sm transition-all hover:-translate-y-2 hover:shadow-xl flex items-center justify-between border-l-8 border-l-teal-500 md:border-l-transparent hover:md:border-l-teal-500">
-                <div className="flex items-center gap-4"><div className="bg-white p-3 rounded-xl text-xl shadow-sm">🔍</div><div><h3 className="font-black text-teal-950 text-sm">ตรวจสอบสถานะงาน</h3><p className="text-[11px] text-teal-800/70">ติดตามงานด้วยรหัสอ้างอิง</p></div></div>
+              <a href="/status" className="group bg-teal-50 p-6 rounded-2xl border border-teal-100 hover:border-teal-400 shadow-sm transition-all hover:-translate-y-2 hover:shadow-xl flex items-center justify-between border-l-8 border-l-teal-500 md:border-l-transparent hover:md:border-l-teal-500">
+                <div className="flex items-center gap-4"><div className="bg-white p-3 rounded-xl text-xl shadow-sm">🔍</div><div><h3 className="font-black text-teal-950 text-sm">ตรวจสอบสถานะงาน</h3><p className="text-[11px] text-teal-700/70">ติดตามงานด้วยรหัสอ้างอิง</p></div></div>
                 <span className="text-teal-300 group-hover:text-teal-600 font-black text-xl">›</span>
               </a>
-              <a href="/form" className="group bg-teal-50 p-5 rounded-2xl border border-teal-100 hover:border-red-400 shadow-sm transition-all hover:-translate-y-2 hover:shadow-xl flex items-center justify-between border-l-8 border-l-red-500 md:border-l-transparent hover:md:border-l-red-500">
-                <div className="flex items-center gap-4"><div className="bg-white p-3 rounded-xl text-xl shadow-sm">📝</div><div><h3 className="font-black text-red-600 text-sm">ส่งแบบฟอร์มรับคืน/แลกเปลี่ยน</h3><p className="text-[11px] text-red-800/70">แจ้งคืนสินค้าหรือแลกเปลี่ยน</p></div></div>
+              <a href="/form" className="group bg-teal-50 p-6 rounded-2xl border border-teal-100 hover:border-red-400 shadow-sm transition-all hover:-translate-y-2 hover:shadow-xl flex items-center justify-between border-l-8 border-l-red-500 md:border-l-transparent hover:md:border-l-red-500">
+                <div className="flex items-center gap-4"><div className="bg-white p-3 rounded-xl text-xl shadow-sm">📝</div><div><h3 className="font-black text-red-600 text-sm">ส่งแบบฟอร์มรับคืน/แลกเปลี่ยน</h3><p className="text-[11px] text-teal-700/70">แจ้งคืนสินค้าหรือแลกเปลี่ยน</p></div></div>
                 <span className="text-red-300 group-hover:text-red-600 font-black text-xl">›</span>
               </a>
-              <a href="/rules" className="group bg-teal-50 p-5 rounded-2xl border border-teal-100 hover:border-blue-500 shadow-sm transition-all hover:-translate-y-2 hover:shadow-xl flex items-center justify-between border-l-8 border-l-blue-500">
-                <div className="flex items-center gap-4"><div className="bg-white p-3 rounded-xl text-xl shadow-sm">📋</div><div><h3 className="font-black text-teal-950 text-sm">หลักเกณฑ์การรับคืนสินค้า</h3><p className="text-[11px] text-teal-800/70">ตรวจสอบเงื่อนไขและนโยบาย</p></div></div>
+              <a href="/rules" className="group bg-teal-50 p-6 rounded-2xl border border-teal-100 hover:border-blue-500 shadow-sm transition-all hover:-translate-y-2 hover:shadow-xl flex items-center justify-between border-l-8 border-l-blue-500">
+                <div className="flex items-center gap-4"><div className="bg-white p-3 rounded-xl text-xl shadow-sm">📋</div><div><h3 className="font-black text-teal-950 text-sm">หลักเกณฑ์การรับคืนสินค้า</h3><p className="text-[11px] text-teal-700/70">ตรวจสอบเงื่อนไขและนโยบาย</p></div></div>
                 <span className="text-blue-200 group-hover:text-blue-500 font-black text-xl">›</span>
               </a>
-              <a href="/manual" className="group bg-teal-50 p-5 rounded-2xl border border-teal-100 hover:border-blue-500 shadow-sm transition-all hover:-translate-y-2 hover:shadow-xl flex items-center justify-between border-l-8 border-l-blue-500">
-                <div className="flex items-center gap-4"><div className="bg-white p-3 rounded-xl text-xl shadow-sm">📖</div><div><h3 className="font-black text-teal-950 text-sm">คู่มือการใช้งานระบบ</h3><p className="text-[11px] text-teal-800/70">Manual</p></div></div>
+              <a href="/manual" className="group bg-teal-50 p-6 rounded-2xl border border-teal-100 hover:border-blue-500 shadow-sm transition-all hover:-translate-y-2 hover:shadow-xl flex items-center justify-between border-l-8 border-l-blue-500">
+                <div className="flex items-center gap-4"><div className="bg-white p-3 rounded-xl text-xl shadow-sm">📖</div><div><h3 className="font-black text-teal-950 text-sm">คู่มือการใช้งานระบบ</h3><p className="text-[11px] text-teal-700/70">Manual</p></div></div>
                 <span className="text-blue-200 group-hover:text-blue-500 font-black text-xl">›</span>
               </a>
             </div>
           </section>
 
           {/* ส่วนพนักงาน */}
-          <section className="bg-white p-8 rounded-3xl shadow-sm border border-teal-200">
-            <h2 className="text-sm font-black text-teal-950 mb-6 flex items-center gap-2 uppercase tracking-wider">💊 ส่วนของพนักงาน GPO</h2>
+          <section className="bg-white p-10 rounded-3xl shadow-sm border border-teal-200">
+            <h2 className="text-base font-black text-teal-950 mb-6 flex items-center gap-2 uppercase tracking-wider">💊 ส่วนของพนักงาน GPO (GPO Staff)</h2>
             <a href="/admin" className="group bg-teal-50 p-5 rounded-2xl border border-teal-100 hover:border-teal-500 shadow-sm transition-all hover:-translate-y-2 hover:shadow-xl flex items-center justify-between border-l-8 border-l-teal-500">
-              <div className="flex items-center gap-4"><div className="bg-white p-3 rounded-xl text-xl shadow-sm">👤</div><div><h3 className="font-black text-teal-950 text-sm">สำหรับพนักงาน GPO</h3><p className="text-[11px] text-teal-800/70">อัปเดตข้อมูล CSR / ขนส่ง / คลัง</p></div></div>
+              <div className="flex items-center gap-4"><div className="bg-white p-3 rounded-xl text-xl shadow-sm">👤</div><div><h3 className="font-black text-teal-950 text-sm">สำหรับพนักงาน GPO</h3><p className="text-[11px] text-teal-700/70">อัปเดตข้อมูล CSR / ขนส่ง / คลัง</p></div></div>
               <span className="text-teal-300 group-hover:text-teal-600 font-black text-xl">›</span>
             </a>
           </section>
@@ -92,9 +93,9 @@ export default function HomePage() {
           </div>
         </div>
         <div className="w-full mt-10 pt-8 border-t border-[#1e293b] flex justify-center">
-          <div className="flex flex-wrap justify-between items-center gap-4 w-full max-w-5xl">
+          <div className="flex flex-wrap rounded-full justify-between items-center gap-3 w-full max-w-4xl">
             {[
-              { label: '🔒 PDPA-Ready', color: 'bg-teal-700' }, { label: '🖥️ AWS Supabase', color: 'bg-slate-600' }, { label: '📱 Mobile-First', color: 'bg-blue-700' }, { label: '⚡ Low Cost', color: 'bg-amber-500 text-teal-950' }, { label: '🤖 Auto PDF', color: 'bg-purple-700' }, { label: '✅ GDP Standard', color: 'bg-emerald-700' }, { label: '☁️ Cloud-Native', color: 'bg-cyan-700' },
+              { label: '🖥️ AWS Supabase', color: 'bg-slate-600' }, { label: '📱 Mobile-First', color: 'bg-blue-700' }, { label: '⚡ Low Cost', color: 'bg-amber-500 text-teal-950' }, { label: '🤖 Auto PDF', color: 'bg-purple-700' }, { label: '✅ GDP Standard', color: 'bg-emerald-700' }, { label: '☁️ Cloud-Native', color: 'bg-cyan-700' },
             ].map((item, i) => (
               <span key={i} className={`${item.color} text-white px-4 py-1.5 rounded-md text-[10px] font-black uppercase tracking-wider shadow-sm border border-white/5`}>{item.label}</span>
             ))}
