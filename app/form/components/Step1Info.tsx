@@ -16,8 +16,6 @@ const TYPES = [
   { label: 'อื่นๆ',            icon: '⋯'  },
 ] as const;
 
-const PROVINCES = ['สงขลา', 'ตรัง', 'พัทลุง', 'ปัตตานี', 'ยะลา', 'นราธิวาส', 'สตูล'];
-
 // ── Sub-components ─────────────────────────────────────────────────────────
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
@@ -41,9 +39,25 @@ export default function Step1Info({ next, updateData }: Step1Props) {
   const [selectedType, setSelectedType] = useState('');
   const [today, setToday]               = useState('');
 
+  // จำลองค่าจากระบบ Authen
+  const authData = {
+    hospitalName: 'องค์การเภสัชกรรม สาขาภาคใต้',
+    province: 'สงขลา'
+  };
+
   useEffect(() => {
     setToday(new Date().toLocaleDateString('th-TH', {
       year: 'numeric', month: 'long', day: 'numeric',
+    }));
+    
+    // ตั้งค่า Default ค่า Authen ลง formData ทันทีที่โหลดหน้า
+    updateData((prev: any) => ({
+      ...prev,
+      sender: { 
+        ...prev.sender, 
+        hospital_name: authData.hospitalName, 
+        province: authData.province 
+      },
     }));
   }, []);
 
@@ -55,6 +69,10 @@ export default function Step1Info({ next, updateData }: Step1Props) {
 
   const handleNext = () => {
     if (!selectedType) return alert('กรุณาเลือกประเภทรายการ');
+    updateData((prev: any) => ({
+      ...prev,
+      reason: selectedType
+    }));
     next();
   };
 
@@ -62,19 +80,13 @@ export default function Step1Info({ next, updateData }: Step1Props) {
     <div className="w-full">
       <div className="w-full flex flex-col gap-5">
 
-        {/* ── ปุ่มกลับสู่หน้าหลัก ── */}
         <div className="flex justify-start">
-          <Link 
-            href="/" 
-            className="flex items-center gap-2 text-teal-700 font-bold text-sm hover:text-teal-900 transition-all px-4 py-2 rounded-lg hover:bg-teal-100/50"
-          >
-          </Link>
+          <Link href="/" className="flex items-center gap-2 text-teal-700 font-bold text-sm hover:text-teal-900 transition-all px-4 py-2 rounded-lg hover:bg-teal-100/50" />
         </div>
 
         {/* ── Card 1 : ประเภทรายการ ── */}
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 w-full">
           <SectionTitle>รายละเอียดรายการ</SectionTitle>
-
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
             {TYPES.map((t) => (
               <button
@@ -89,9 +101,7 @@ export default function Step1Info({ next, updateData }: Step1Props) {
                 ].join(' ')}
               >
                 <span className="text-2xl">{t.icon}</span>
-                <span className={`text-xs font-bold text-center leading-tight ${
-                  selectedType === t.label ? 'text-teal-800' : 'text-slate-500'
-                }`}>
+                <span className={`text-xs font-bold text-center leading-tight ${selectedType === t.label ? 'text-teal-800' : 'text-slate-500'}`}>
                   {t.label}
                 </span>
               </button>
@@ -112,7 +122,7 @@ export default function Step1Info({ next, updateData }: Step1Props) {
           <div className="grid grid-cols-2 gap-4">
             <div className="flex flex-col gap-1.5">
               <FieldLabel>เลขที่เอกสาร (Auto)</FieldLabel>
-              <input value="S058/2026" readOnly className="px-4 py-3 rounded-xl bg-slate-100 text-slate-500 font-mono text-sm border-none outline-none" />
+              <input value="S001/2026" readOnly className="px-4 py-3 rounded-xl bg-slate-100 text-slate-500 font-mono text-sm border-none outline-none" />
             </div>
             <div className="flex flex-col gap-1.5">
               <FieldLabel>วันที่ทำรายการ</FieldLabel>
@@ -124,28 +134,17 @@ export default function Step1Info({ next, updateData }: Step1Props) {
         {/* ── Card 2 : ข้อมูลหน่วยงาน ── */}
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-7 w-full">
           <SectionTitle>ข้อมูลหน่วยงาน</SectionTitle>
-
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            
+            {/* ดึงค่าจาก AuthData แสดงผลแบบ ReadOnly */}
             <div className="sm:col-span-2 flex flex-col gap-1.5">
-              <FieldLabel>ชื่อโรงพยาบาล / ร้านยา / คลินิก *</FieldLabel>
-              <input
-                onChange={(e) => set('hospital_name', e.target.value)}
-                placeholder="ระบุชื่อหน่วยงาน"
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-teal-200 focus:border-teal-500 transition"
-              />
+              <FieldLabel>ชื่อโรงพยาบาล / ร้านยา / คลินิก</FieldLabel>
+              <input value={authData.hospitalName} readOnly className="w-full px-4 py-3 rounded-xl bg-slate-100 text-slate-500 text-sm border-none outline-none cursor-not-allowed" />
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <FieldLabel>จังหวัด *</FieldLabel>
-              <select
-                onChange={(e) => set('province', e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-teal-200 focus:border-teal-500 transition appearance-none cursor-pointer"
-              >
-                <option value="">-- เลือกจังหวัด --</option>
-                {PROVINCES.map((p) => (
-                  <option key={p} value={p}>{p}</option>
-                ))}
-              </select>
+              <FieldLabel>จังหวัด</FieldLabel>
+              <input value={authData.province} readOnly className="w-full px-4 py-3 rounded-xl bg-slate-100 text-slate-500 text-sm border-none outline-none cursor-not-allowed" />
             </div>
 
             <div className="flex flex-col gap-1.5">
@@ -163,14 +162,13 @@ export default function Step1Info({ next, updateData }: Step1Props) {
               <input value="user@email.com" readOnly className="px-4 py-3 rounded-xl bg-slate-100 text-slate-500 text-sm border-none outline-none" />
             </div>
 
-            {/* ── แยกฟิลด์ผู้ส่งคืนและตำแหน่ง ── */}
             <div className="sm:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-5">
               <div className="flex flex-col gap-1.5">
-                <FieldLabel>ชื่อ-นามสกุล ผู้ส่งคืน *</FieldLabel>
+                <FieldLabel>ชื่อ-นามสกุล ผู้ส่งคืน</FieldLabel>
                 <input value="ธนกฤต โรจน์กิจจานุรักษ์" readOnly className="w-full px-4 py-3 rounded-xl bg-slate-100 text-slate-500 text-sm border-none outline-none cursor-not-allowed" />
               </div>
               <div className="flex flex-col gap-1.5">
-                <FieldLabel>ตำแหน่ง *</FieldLabel>
+                <FieldLabel>ตำแหน่ง</FieldLabel>
                 <input value="เภสัชกร 7" readOnly className="w-full px-4 py-3 rounded-xl bg-slate-100 text-slate-500 text-sm border-none outline-none cursor-not-allowed" />
               </div>
             </div>
@@ -184,7 +182,6 @@ export default function Step1Info({ next, updateData }: Step1Props) {
         >
           ดำเนินการต่อ →
         </button>
-
       </div>
     </div>
   );
