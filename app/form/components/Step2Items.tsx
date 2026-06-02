@@ -19,7 +19,6 @@ const validateItem = (item: any) => {
   
   const today = new Date();
   const expDate = new Date(item.exp);
-  
   const diffInMonths = (expDate.getFullYear() - today.getFullYear()) * 12 + (expDate.getMonth() - today.getMonth());
 
   if (item.productType === 'GPO') {
@@ -86,37 +85,32 @@ function DrugCard({ item, index, onRemove }: { item: any; index: number; onRemov
 
 // ── Main Component ─────────────────────────────────────────────────────────
 export default function Step2Items({ next, back, updateData, formData }: StepProps) {
-  const [items, setItems] = useState<any[]>([]);
+  // กิต: ตรงนี้ผมแก้ให้ดึงค่าจาก formData มาตั้งต้นเสมอครับ
+  const [items, setItems] = useState<any[]>(formData?.items || []);
   const [temp,  setTemp]  = useState({
     drugName: '', productType: '', qty: '', unit: '', lot: '', exp: '', val: '', inv: '',
   });
   
   const drugNameInputRef = useRef<HTMLInputElement>(null);
-
   const set = (field: string, value: string) => setTemp(prev => ({ ...prev, [field]: value }));
 
   const addItemToList = () => {
     if (items.length >= MAX) return alert(`จำกัดรายการสูงสุด ${MAX} รายการครับ`);
-    
-    // บังคับกรอกเฉพาะที่สำคัญ
     if (!temp.drugName || !temp.qty || !temp.lot || !temp.exp) {
       return alert('กรุณากรอกชื่อยา, จำนวน, Lot, และ Exp. Date ให้ครบถ้วนครับ');
     }
     
-    // ตรวจสอบเงื่อนไข Pre-validation (อายุยา)
     const validation = validateItem(temp);
     if (!validation.valid) return alert(validation.msg);
     
-    // ถ้าไม่กรอกมูลค่า ให้ใส่เป็น '0'
-    const updated = [...items, { ...temp, val: temp.val || '0', id: Date.now() }];
-    setItems(updated);
+    const newItem = { ...temp, val: temp.val || '0', id: Date.now() };
+    setItems(prev => [...prev, newItem]);
     setTemp({ drugName: '', productType: '', qty: '', unit: '', lot: '', exp: '', val: '', inv: '' });
     
     drugNameInputRef.current?.focus();
   };
 
-  const removeItem = (id: number) => setItems(items.filter(i => i.id !== id));
-
+  const removeItem = (id: number) => setItems(prev => prev.filter(i => i.id !== id));
   const totalValue = items.reduce((s, i) => s + parseFloat(i.val || '0'), 0);
 
   const handleNext = () => {

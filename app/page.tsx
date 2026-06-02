@@ -58,7 +58,7 @@ export default function HomePage() {
 
           {/* ส่วนพนักงาน */}
           <section className="bg-white p-6 md:p-10 rounded-3xl shadow-sm border border-teal-200">
-            <h2 className="text-base font-black text-teal-950 mb-6 flex items-center gap-2 uppercase tracking-wider">💊 ส่วนของพนักงาน GPO (GPO Staff)</h2>
+            <h2 className="text-base font-black text-teal-950 mb-6 flex items-center gap-2 uppercase tracking-wider">🧑‍💼 ส่วนของพนักงาน GPO (GPO Staff)</h2>
             <a href="/admin" className="group bg-teal-50 p-5 rounded-2xl border border-teal-100 hover:border-teal-500 shadow-sm transition-all hover:-translate-y-2 hover:shadow-xl flex items-center justify-between border-l-8 border-l-teal-500">
               <div className="flex items-center gap-4"><div className="bg-white p-3 rounded-xl text-xl shadow-sm">👤</div><div><h3 className="font-black text-teal-950 text-sm">สำหรับพนักงาน GPO</h3><p className="text-[11px] text-teal-700/70">อัปเดตข้อมูล CSR / ขนส่ง / คลัง</p></div></div>
               <span className="text-teal-300 group-hover:text-teal-600 font-black text-xl">›</span>
@@ -69,7 +69,7 @@ export default function HomePage() {
 
       {/* FOOTER - ปรับ grid ให้เรียงแนวตั้งบนมือถือ */}
       <footer className="w-full bg-[#0a0f17] border-t border-[#1e293b] pt-12 pb-8 px-6 md:px-16 text-[#94a3b8]">
-        <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-12 max-w-7xl mx-auto">
+        <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-12 max-w-5xl mx-auto">
           <div className="space-y-4">
             <div className="flex items-center gap-3"><span className="bg-[#0d9488]/20 text-[#2dd4bf] border border-[#0d9488]/40 text-[10px] font-black px-3 py-1 rounded tracking-wider">GPO SOUTHERN</span><span className="text-white font-black text-sm">Xchange Portal</span></div>
             <div className="bg-[#111827] border border-[#1e293b] p-5 rounded-2xl w-full"><div className="text-[10px] text-[#2dd4bf] font-black uppercase mb-1">Architecture Model</div><div className="text-white text-sm font-black mb-2 flex items-center gap-2">🗺️ แผนผังโครงสร้างระบบ Xchange</div><p className="text-[11px] leading-relaxed mb-4 text-[#2dd4bf]">คลิกเพื่อเปิดดูสรุปฟังก์ชันหลัก วิสัยทัศน์ และกระบวนการ Automation ทั้งหมดบนหน้าจอ</p><button className="bg-[#1e40af] text-white text-[11px] font-black px-4 py-2 rounded-lg hover:bg-[#1e3a8a] transition-all w-full">เปิดดูผังระบบ 🔍</button></div>
@@ -91,10 +91,10 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-        <div className="w-full mt-10 pt-8 border-t border-[#1e293b] flex justify-center">
-          <div className="flex flex-wrap rounded-full justify-center gap-3 w-full max-w-4xl">
+        <div className="w-full mt-8 pt-8 border-t border-[#1e293b] flex justify-center">
+          <div className="flex flex-wrap rounded-full justify-center gap-7 w-full max-w-4xl">
             {[
-              { label: '🖥️ AWS Supabase', color: 'bg-slate-600' }, { label: '📱 Mobile-First', color: 'bg-blue-700' }, { label: '⚡ Low Cost', color: 'bg-amber-500 text-teal-950' }, { label: '🤖 Auto PDF', color: 'bg-purple-700' }, { label: '✅ GDP Standard', color: 'bg-emerald-700' }, { label: '☁️ Cloud-Native', color: 'bg-cyan-700' },
+              { label: '☁️ Cloud-Native', color: 'bg-cyan-700' }, { label: '🖥️ AWS Supabase', color: 'bg-slate-600' }, { label: '📱 Mobile-First', color: 'bg-blue-700' }, { label: '🤖 Auto PDF', color: 'bg-purple-700' }, { label: '✅ GDP Standard', color: 'bg-emerald-700' },
             ].map((item, i) => (
               <span key={i} className={`${item.color} text-white px-3 py-1 rounded-md text-[9px] font-black uppercase tracking-wider shadow-sm border border-white/5`}>{item.label}</span>
             ))}
