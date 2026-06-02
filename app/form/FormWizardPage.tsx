@@ -64,7 +64,7 @@ export default function FormWizardPage() {
           <div className="min-h-[60vh]">
             {step === 1 && <Step1Info next={nextStep} updateData={setFormData} />}
             
-            {/* ส่ง formData เข้าไปให้ Step2Items เพื่อใช้เช็คเงื่อนไข reason */}
+            {/* Step 2 */}
             {step === 2 && (
               <Step2Items 
                 next={nextStep} 
@@ -74,7 +74,16 @@ export default function FormWizardPage() {
               />
             )}
             
-            {step === 3 && <Step3Reason next={nextStep} back={prevStep} updateData={setFormData} />}
+            {/* Step 3: เพิ่ม formData={formData} เรียบร้อยครับ */}
+            {step === 3 && (
+              <Step3Reason 
+                next={nextStep} 
+                back={prevStep} 
+                updateData={setFormData} 
+                formData={formData} 
+              />
+            )}
+
             {step === 4 && <Step4Sign next={nextStep} back={prevStep} updateData={setFormData} />}
             {step === 5 && <ReviewPage back={prevStep} data={formData} />}
           </div>
