@@ -17,10 +17,22 @@ const STEPS = [
 
 export default function FormWizardPage() {
   const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState({ sender: {}, items: [], reason: '', signature: null });
+  const [formData, setFormData] = useState({ 
+    sender: {}, 
+    items: [], 
+    reason: '', 
+    signature: null 
+  });
 
   const nextStep = () => setStep((prev) => Math.min(prev + 1, 5));
   const prevStep = () => setStep((prev) => Math.max(prev - 1, 1));
+
+  // ฟังก์ชันสำหรับ submit ข้อมูลจริง (กิตสามารถใส่ Logic ส่ง Supabase ที่นี่)
+  const handleSubmit = async () => {
+    console.log("Submitting:", formData);
+    // await supabase.from('returns').insert(formData);
+    return { refId: 'GPO-' + Date.now().toString().slice(-6) };
+  };
 
   return (
     <div className="w-full py-12 px-4">
@@ -64,28 +76,22 @@ export default function FormWizardPage() {
           <div className="min-h-[60vh]">
             {step === 1 && <Step1Info next={nextStep} updateData={setFormData} />}
             
-            {/* Step 2 */}
             {step === 2 && (
-              <Step2Items 
-                next={nextStep} 
-                back={prevStep} 
-                updateData={setFormData} 
-                formData={formData} 
-              />
+              <Step2Items next={nextStep} back={prevStep} updateData={setFormData} formData={formData} />
             )}
             
-            {/* Step 3: เพิ่ม formData={formData} เรียบร้อยครับ */}
             {step === 3 && (
-              <Step3Reason 
-                next={nextStep} 
-                back={prevStep} 
-                updateData={setFormData} 
-                formData={formData} 
-              />
+              <Step3Reason next={nextStep} back={prevStep} updateData={setFormData} formData={formData} />
             )}
 
-            {step === 4 && <Step4Sign next={nextStep} back={prevStep} updateData={setFormData} />}
-            {step === 5 && <ReviewPage back={prevStep} data={formData} />}
+            {step === 4 && (
+              <Step4Sign next={nextStep} back={prevStep} updateData={setFormData} formData={formData} />
+            )}
+
+            {/* ปรับแก้ตรงนี้ให้ส่ง formData แทน data เพื่อความสอดคล้องครับ */}
+            {step === 5 && (
+              <ReviewPage back={prevStep} formData={formData} onSubmit={handleSubmit} />
+            )}
           </div>
         </div>
       </div>
