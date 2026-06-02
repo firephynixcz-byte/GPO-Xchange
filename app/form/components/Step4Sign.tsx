@@ -125,7 +125,7 @@ function SignaturePad({
 
 // ── Main Component ─────────────────────────────────────────────────────────
 export default function Step4Signature({ next, back, updateData, formData }: StepProps) {
-  const canvasRef  = useRef<HTMLCanvasElement>(null);
+  const canvasRef  = useRef<HTMLCanvasElement>(null!);
   const [isEmpty,  setIsEmpty]  = useState(true);
 
   // ── Auto-fill ข้อมูลจาก formData ที่ส่งต่อมาจาก Step 1 ──
