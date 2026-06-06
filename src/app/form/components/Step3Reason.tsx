@@ -42,14 +42,13 @@ function BadgeBtn({ label, active, onClick }: { label: string; active: boolean; 
 
 // ── Main Component ─────────────────────────────────────────────────────────
 export default function Step3Reason({ next, back, updateData, formData }: StepProps) {
-  // เช็คเงื่อนไขจาก Step1: ถ้ามีคำว่า "แลกเปลี่ยน" ให้แสดงส่วนเลือกสินค้า
+  // แก้ไขจุดนี้ให้ดึงจาก formData.reason ที่เราเซฟไว้ใน Step1 ครับ
   const isExchange = formData?.reason?.includes('แลกเปลี่ยน');
   const items = formData?.items || [];
 
   const [reason, setReason] = useState(formData?.returnReason?.replace('อื่นๆ: ', '') || '');
   const [reasonOther, setReasonOther] = useState(formData?.returnReason?.startsWith('อื่นๆ: ') ? formData.returnReason.replace('อื่นๆ: ', '') : '');
   
-  // Logic สำหรับเลือกสินค้าแลกเปลี่ยน
   const [exchangeMode, setExchangeMode] = useState<'รายการเดิม' | 'อื่นๆ' | ''>(formData?.exchangeProductType || '');
   const [checkedItems, setCheckedItems] = useState<string[]>(formData?.exchangeProductList || []);
   const [exchangeOtherText, setExchangeOtherText] = useState(formData?.exchangeProductOther || '');
@@ -68,7 +67,6 @@ export default function Step3Reason({ next, back, updateData, formData }: StepPr
     if (!reason) return alert('กรุณาระบุเหตุผลการส่งคืนครับ');
     if (reason === 'อื่นๆ' && !reasonOther.trim()) return alert('กรุณาระบุรายละเอียดเหตุผลครับ');
     
-    // ตรวจสอบข้อมูลสินค้ากรณีเป็นรายการแลกเปลี่ยน
     if (isExchange) {
         if (!exchangeMode) return alert('กรุณาระบุสินค้าที่ต้องการแลกเปลี่ยนครับ');
         if (exchangeMode === 'รายการเดิม' && checkedItems.length === 0) return alert('กรุณาเลือกรายการสินค้าเดิมอย่างน้อย 1 รายการ');
@@ -106,7 +104,6 @@ export default function Step3Reason({ next, back, updateData, formData }: StepPr
             )}
           </div>
 
-          {/* ส่วนแสดงเฉพาะกรณี แลกเปลี่ยน */}
           {isExchange && (
             <div className="flex flex-col gap-3 border-t border-slate-100 pt-6">
               <FieldLabel>กรณีแลกเปลี่ยน ระบุสินค้าที่ต้องการ *</FieldLabel>
@@ -154,7 +151,6 @@ export default function Step3Reason({ next, back, updateData, formData }: StepPr
               <p className="text-xs font-bold text-slate-500">📍 ที่อยู่สำหรับไปรับสินค้า</p>
               <div className="flex flex-col gap-1.5"><FieldLabel>เลขที่ / ถนน</FieldLabel><input value={addrStreet} onChange={e => setAddrStreet(e.target.value)} className={inputCls} /></div>
               
-              {/* แถวแนวยาว: ตำบล อำเภอ จังหวัด */}
               <div className="grid grid-cols-3 gap-3">
                 <div className="flex flex-col gap-1.5"><FieldLabel>ตำบล</FieldLabel><input value={addrSub} onChange={e => setAddrSub(e.target.value)} className={inputCls} /></div>
                 <div className="flex flex-col gap-1.5"><FieldLabel>อำเภอ</FieldLabel><input value={addrDistrict} onChange={e => setAddrDistrict(e.target.value)} className={inputCls} /></div>

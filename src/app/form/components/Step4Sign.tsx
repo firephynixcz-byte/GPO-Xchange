@@ -128,7 +128,7 @@ export default function Step4Signature({ next, back, updateData, formData }: Ste
   const canvasRef  = useRef<HTMLCanvasElement>(null!);
   const [isEmpty,  setIsEmpty]  = useState(true);
 
-  // ── Auto-fill ข้อมูลจาก formData ที่ส่งต่อมาจาก Step 1 ──
+  // Auto-fill ข้อมูลจาก formData 
   const [fullname, setFullname] = useState(formData?.sigFullname || 'ธนกฤต โรจน์กิจจานุรักษ์');
   const [position, setPosition] = useState(formData?.sigPosition || 'เภสัชกร 7');
   const [pdpa,     setPdpa]     = useState(formData?.pdpaConsent || false);
@@ -161,7 +161,6 @@ export default function Step4Signature({ next, back, updateData, formData }: Ste
 
   return (
     <div className="w-full flex flex-col gap-5">
-      {/* ── Card: ลายเซ็น (คงเดิม) ── */}
       <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-7">
         <SectionTitle>Step 4: ยืนยันข้อมูลและลงนาม</SectionTitle>
         <div className="flex flex-col gap-5">
@@ -194,7 +193,6 @@ export default function Step4Signature({ next, back, updateData, formData }: Ste
         </div>
       </div>
 
-      {/* ── Card: PDPA (คงเดิม) ── */}
       <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-7">
         <SectionTitle>ความยินยอม PDPA</SectionTitle>
         <label className={['flex items-start gap-4 p-5 rounded-2xl border-2 cursor-pointer transition-all', pdpa ? 'border-teal-400 bg-teal-50' : 'border-slate-200 bg-slate-50 hover:border-teal-200'].join(' ')}>
@@ -207,7 +205,6 @@ export default function Step4Signature({ next, back, updateData, formData }: Ste
         {pdpa && <p className="mt-3 text-xs text-teal-600 font-medium text-center">✅ ยืนยันการยินยอมเรียบร้อยแล้ว</p>}
       </div>
 
-      {/* ── Navigation (คงเดิม) ── */}
       <div className="grid grid-cols-2 gap-4">
         <button type="button" onClick={back} className="py-4 rounded-xl font-bold text-sm text-slate-500 border-2 border-slate-200 hover:border-teal-400 hover:text-teal-600 transition-all">← ย้อนกลับ</button>
         <button type="button" onClick={handleNext} className="py-4 rounded-xl font-bold text-white text-sm bg-gradient-to-r from-teal-700 to-teal-600 hover:from-teal-800 hover:to-teal-700 transition-all">ตรวจสอบและยืนยัน →</button>

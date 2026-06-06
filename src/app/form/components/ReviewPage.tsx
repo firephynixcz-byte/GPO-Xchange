@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { ReturnRepository } from '../../../repositories/ReturnRepository';
 
 // ── Types ──────────────────────────────────────────────────────────────────
 interface StepProps {
@@ -44,26 +45,42 @@ export default function ReviewPage({ back, formData, onSubmit }: StepProps) {
   const [status,  setStatus]  = useState<'idle' | 'success' | 'error'>('idle');
   const [refId,   setRefId]   = useState('');
 
-  const { sender, items, totalValue, returnReason, exchangeProduct, deliveryType, addrStreet, addrSub, addrDistrict, addrProvince, agentInfo, sigImage, sigFullname, sigPosition } = formData;
+  const { 
+    sender, items, totalValue, returnReason, exchangeProduct, 
+    deliveryType, addrStreet, addrSub, addrDistrict, addrProvince, 
+    agentInfo, sigImage, sigFullname, sigPosition 
+  } = formData;
 
   const deliveryDetail = deliveryType === 'ขนส่ง' 
     ? `${addrStreet} ต.${addrSub} อ.${addrDistrict} จ.${addrProvince}` 
     : agentInfo || '-';
 
-  const handleSubmit = async () => {
-    setLoading(true);
-    try {
-      const result = await onSubmit();
-      setRefId(result?.refId || 'GPO-' + Date.now().toString().slice(-6)); 
-      setStatus('success');
-    } catch {
-      setStatus('error');
-    } finally {
-      setLoading(false);
-    }
-  };
+const handleSubmit = async () => {
+  setLoading(true);
+  try {
+    console.log("กำลังส่งข้อมูลไปยัง Repository...");
+    // กิตลอง Log ดูว่า formData ที่จะส่งไปมีหน้าตาเป็นอย่างไร
+    console.log("FormData ที่ส่งไป:", JSON.stringify(formData, null, 2));
+    
+    const result = await ReturnRepository.createReturnRequest(formData);
+    
+    console.log("ส่งสำเร็จ, ผลลัพธ์คือ:", result);
+    setRefId(result?.refId);
+    setStatus('success');
+  } catch (error: any) {
+    // การแสดงผล Error ที่ละเอียดขึ้น
+    console.error("!!! บันทึกไม่สำเร็จ Error คือ:", error);
+    
+    // พยายามดึง message หรือ detail ออกมาโชว์
+    const errorMessage = error?.message || error?.details || error?.hint || JSON.stringify(error);
+    alert("บันทึกข้อมูลไม่สำเร็จ: " + errorMessage);
+    
+    setStatus('error');
+  } finally {
+    setLoading(false);
+  }
+};
 
-  // ── Success screen ──
   if (status === 'success') {
     return (
       <div className="w-full flex flex-col items-center justify-center gap-6 py-16 text-center bg-white rounded-2xl shadow-sm border border-slate-100">
@@ -80,7 +97,6 @@ export default function ReviewPage({ back, formData, onSubmit }: StepProps) {
     );
   }
 
-  // ── Error screen ──
   if (status === 'error') {
     return (
       <div className="w-full flex flex-col items-center gap-4 py-16 text-center bg-white rounded-2xl shadow-sm border border-slate-100">
@@ -91,14 +107,14 @@ export default function ReviewPage({ back, formData, onSubmit }: StepProps) {
     );
   }
 
-  // ── Review screen ──
   return (
     <div className="w-full flex flex-col gap-5">
       <ReviewCard title="📋 ข้อมูลหน่วยงาน" color="#0f766e">
         <ReviewRow label="ประเภทรายการ" value={sender?.return_type} />
         <ReviewRow label="หน่วยงาน" value={sender?.hospital_name} />
         <ReviewRow label="จังหวัด" value={sender?.province} />
-        <ReviewRow label="ผู้ส่งคืน" value={sender?.sender_name} />
+        <ReviewRow label="ผู้ส่งคืน" value={sigFullname} />
+        <ReviewRow label="ตำแหน่ง" value={sigPosition} />
       </ReviewCard>
 
       <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
@@ -109,7 +125,10 @@ export default function ReviewPage({ back, formData, onSubmit }: StepProps) {
               <span className="w-6 h-6 rounded-md bg-rose-50 text-rose-600 text-[11px] font-bold flex items-center justify-center shrink-0">{i + 1}</span>
               <div className="flex-1">
                 <p className="font-bold text-sm text-slate-900">{d.drugName}</p>
-                <p className="text-xs text-slate-500">จำนวน: {d.qty} {d.unit} | Lot: {d.lot} | Exp: {d.exp}</p>
+                <p className="text-xs text-slate-500">
+                  จำนวน: {d.qty} {d.unit} | Lot: {d.lot} | Exp: {d.exp}
+                  {d.invoiceNumber && <span className="block text-teal-600 font-bold">ใบส่งของ: {d.invoiceNumber}</span>}
+                </p>
               </div>
             </div>
           ))}
@@ -129,19 +148,24 @@ export default function ReviewPage({ back, formData, onSubmit }: StepProps) {
 
       <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
         <div className="px-6 py-3 font-bold text-sm text-white bg-amber-700">✍️ ลายมือชื่อผู้ส่งคืน</div>
-        <div className="px-6 py-5 flex items-center gap-6">
+        <div className="px-6 py-5 flex flex-col items-center gap-2">
           {sigImage && (
-            <div className="flex flex-col items-center">
+            <>
               <img src={sigImage} alt="ลายเซ็น" className="max-h-20" />
-              <p className="text-sm font-bold">{sigFullname}</p>
-            </div>
+              <div className="text-center mt-2 border-t border-slate-200 pt-2 w-full">
+                <p className="text-sm font-bold text-slate-800">({sigFullname})</p>
+                <p className="text-xs text-slate-500">{sigPosition}</p>
+              </div>
+            </>
           )}
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <button type="button" onClick={back} className="py-4 rounded-xl font-bold text-sm text-slate-500 border-2 border-slate-200">← ย้อนกลับ</button>
-        <button type="button" onClick={handleSubmit} className="py-4 rounded-xl font-bold text-white text-sm bg-gradient-to-r from-teal-700 to-teal-600">✅ ยืนยันและส่งแบบฟอร์ม</button>
+        <button type="button" onClick={handleSubmit} disabled={loading} className="py-4 rounded-xl font-bold text-white text-sm bg-gradient-to-r from-teal-700 to-teal-600">
+          {loading ? 'กำลังส่งข้อมูล...' : '✅ ยืนยันและส่งแบบฟอร์ม'}
+        </button>
       </div>
     </div>
   );

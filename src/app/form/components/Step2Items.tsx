@@ -103,7 +103,14 @@ export default function Step2Items({ next, back, updateData, formData }: StepPro
     const validation = validateItem(temp);
     if (!validation.valid) return alert(validation.msg);
     
-    const newItem = { ...temp, val: temp.val || '0', id: Date.now() };
+    // บันทึก inv (เลขใบส่งของ) เข้าไปใน newItem ครับ
+    const newItem = { 
+      ...temp, 
+      val: temp.val || '0', 
+      invoiceNumber: temp.inv, // เพิ่มค่านี้เพื่อให้สอดคล้องกับ Repository
+      id: Date.now() 
+    };
+    
     setItems(prev => [...prev, newItem]);
     setTemp({ drugName: '', productType: '', qty: '', unit: '', lot: '', exp: '', val: '', inv: '' });
     
