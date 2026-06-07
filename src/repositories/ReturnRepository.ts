@@ -1,9 +1,13 @@
 import { createClient } from '@supabase/supabase-js';
 import { nanoid } from 'nanoid';
 
-// --- แก้ไขจุดนี้: ใส่ URL และ KEY ของกิตลงไปตรงๆ เพื่อตัดปัญหา Environment Variable ---
-const SUPABASE_URL = 'https://qzqvvhfugdrpxegetvbm.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF6cXZ2aGZ1Z2RycHhlZ2V0dmJtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5NzE0MzAsImV4cCI6MjA5NTU0NzQzMH0.8AnIONgcB3FyoiZsWdcxvPfsu7V9yZzlRAY4MPu5Iio';
+// --- เปลี่ยนมาใช้ process.env เพื่อความปลอดภัย ---
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+if (!SUPABASE_URL || !SUPABASE_KEY) {
+  console.error("DEBUG: ENV missing!", { SUPABASE_URL, SUPABASE_KEY });
+}
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -18,14 +22,20 @@ const sanitizeDate = (date: any) => {
 
 export const ReturnRepository = {
   async getNextDocNumber() {
+    // ใช้ .maybeSingle() เพื่อป้องกัน Error กรณีตารางว่าง
     const { data, error } = await supabase
       .from('requests')
       .select('doc_number')
       .order('id', { ascending: false })
       .limit(1)
-      .single();
+      .maybeSingle();
   
-    if (error || !data) return "S001/2026"; // ถ้ายังไม่มีข้อมูล เริ่มที่ 001
+    if (error) {
+      console.error("Error fetching doc_number:", error);
+      return "S001/2026";
+    }
+
+    if (!data) return "S001/2026"; 
 
     const lastNum = parseInt(data.doc_number.split('/')[0].replace('S', ''));
     const nextNum = (lastNum + 1).toString().padStart(3, '0');

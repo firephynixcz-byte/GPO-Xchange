@@ -1,6 +1,10 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+
 export default function HomePage() {
+  const router = useRouter();
+
   return (
     <div className="min-h-screen bg-teal-100 font-sans">
       
@@ -18,7 +22,7 @@ export default function HomePage() {
         </div>
       </header>
 
-      {/* 2. MAIN CONTENT - ปรับ padding ให้ responsive */}
+      {/* 2. MAIN CONTENT */}
       <main className="w-full px-4 md:px-20 py-10 pt-20 pb-16">
         <div className="max-w-5xl mx-auto space-y-8">
           
@@ -33,7 +37,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* ส่วนของลูกค้า - ปรับ grid ให้เป็น 1 คอลัมน์บนมือถือ */}
+          {/* ส่วนของลูกค้า */}
           <section className="bg-white p-6 md:p-10 rounded-3xl shadow-sm border border-teal-200 mb-8">
             <h2 className="text-base font-black text-teal-950 mb-6 flex items-center gap-2 uppercase tracking-wider">🏠 ส่วนของลูกค้า (Customers)</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -41,10 +45,15 @@ export default function HomePage() {
                 <div className="flex items-center gap-4"><div className="bg-white p-3 rounded-xl text-xl shadow-sm">🔍</div><div><h3 className="font-black text-teal-950 text-sm">ตรวจสอบสถานะงาน</h3><p className="text-[11px] text-teal-700/70">ติดตามงานด้วยรหัสอ้างอิง</p></div></div>
                 <span className="text-teal-300 group-hover:text-teal-600 font-black text-xl">›</span>
               </a>
-              <a href="/form" className="group bg-teal-50 p-6 rounded-2xl border border-teal-100 hover:border-red-400 shadow-sm transition-all hover:-translate-y-2 hover:shadow-xl flex items-center justify-between border-l-8 border-l-red-500 md:border-l-transparent hover:md:border-l-red-500">
+              
+              <button 
+                onClick={() => router.push('/auth')}
+                className="group bg-teal-50 p-6 rounded-2xl border border-teal-100 hover:border-red-400 shadow-sm transition-all hover:-translate-y-2 hover:shadow-xl flex items-center justify-between border-l-8 border-l-red-500 md:border-l-transparent hover:md:border-l-red-500 w-full text-left"
+              >
                 <div className="flex items-center gap-4"><div className="bg-white p-3 rounded-xl text-xl shadow-sm">📝</div><div><h3 className="font-black text-red-600 text-sm">ส่งแบบฟอร์มรับคืน/แลกเปลี่ยน</h3><p className="text-[11px] text-teal-700/70">แจ้งคืนสินค้าหรือแลกเปลี่ยน</p></div></div>
                 <span className="text-red-300 group-hover:text-red-600 font-black text-xl">›</span>
-              </a>
+              </button>
+
               <a href="/rules" className="group bg-teal-50 p-6 rounded-2xl border border-teal-100 hover:border-blue-500 shadow-sm transition-all hover:-translate-y-2 hover:shadow-xl flex items-center justify-between border-l-8 border-l-blue-500">
                 <div className="flex items-center gap-4"><div className="bg-white p-3 rounded-xl text-xl shadow-sm">📋</div><div><h3 className="font-black text-teal-950 text-sm">หลักเกณฑ์การรับคืนสินค้า</h3><p className="text-[11px] text-teal-700/70">ตรวจสอบเงื่อนไขและนโยบาย</p></div></div>
                 <span className="text-blue-200 group-hover:text-blue-500 font-black text-xl">›</span>
@@ -67,7 +76,7 @@ export default function HomePage() {
         </div>
       </main>
 
-      {/* FOOTER - ปรับ grid ให้เรียงแนวตั้งบนมือถือ */}
+      {/* FOOTER */}
       <footer className="w-full bg-[#0a0f17] border-t border-[#1e293b] pt-12 pb-8 px-6 md:px-16 text-[#94a3b8]">
         <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-12 max-w-5xl mx-auto">
           <div className="space-y-4">

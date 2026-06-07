@@ -1,13 +1,21 @@
 import { createBrowserClient } from '@supabase/ssr';
 
-// ฟังก์ชันนี้จะสร้าง client ที่ปลอดภัยสำหรับใช้งานฝั่ง Client (หน้าเว็บ)
-export const createClient = () => {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+// สร้างตัวแปรไว้เก็บ instance เดียว (Singleton)
+let browserClient: ReturnType<typeof createBrowserClient> | null = null;
 
-  if (!supabaseUrl || !supabaseKey) {
-    throw new Error("ลืมใส่ URL หรือ Key ใน Environment Variables ครับ!");
+export const createClient = () => {
+  // ถ้ายังไม่มี client ถึงจะสร้างใหม่
+  if (!browserClient) {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
+    if (!supabaseUrl || !supabaseKey) {
+      throw new Error("ลืมใส่ URL หรือ Key ใน Environment Variables ครับ!");
+    }
+
+    browserClient = createBrowserClient(supabaseUrl, supabaseKey);
   }
 
-  return createBrowserClient(supabaseUrl, supabaseKey);
+  // ส่งคืนตัวเดิมที่สร้างไว้แล้วเสมอ
+  return browserClient;
 };

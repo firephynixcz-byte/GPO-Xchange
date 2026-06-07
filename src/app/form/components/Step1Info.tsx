@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-// กิตอย่าลืม Import Repository เข้ามานะครับ
+import { useRouter } from 'next/navigation';
+import { createClient } from '@/lib/supabase/client';
 import { ReturnRepository } from '../../../repositories/ReturnRepository';
 
 // ── Types ──────────────────────────────────────────────────────────────────
@@ -37,36 +38,59 @@ function FieldLabel({ children }: { children: React.ReactNode }) {
 
 // ── Main Component ─────────────────────────────────────────────────────────
 export default function Step1Info({ next, updateData }: Step1Props) {
+  const router = useRouter();
   const [selectedType, setSelectedType] = useState('');
   const [otherDetail, setOtherDetail] = useState('');
   const [today, setToday] = useState('');
-  // แก้ไข: ใช้ State สำหรับ docNumber เพื่อรองรับเลขที่ดึงจาก DB
   const [docNumber, setDocNumber] = useState('Loading...'); 
-  
-  const authData = {
-    hospitalName: 'องค์การเภสัชกรรม สาขาภาคใต้',
-    province: 'สงขลา',
-    fullname: 'ธนกฤต โรจน์กิจจานุรักษ์',
-    position: 'เภสัชกร 7'
-  };
+  const [clientData, setClientData] = useState<any>(null);
+  const [customerCode, setCustomerCode] = useState('');
 
   useEffect(() => {
-    // ดึงเลขที่เอกสารล่าสุดจาก DB
-    const fetchDocNumber = async () => {
+    const init = async () => {
+      const supabase = createClient();
+      
+      // 1. ดึงข้อมูล User
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        router.push('/auth');
+        return;
+      }
+
+      // 2. ดึงข้อมูลลูกค้าและตรวจสอบสถานะ
+      const { data, error } = await supabase
+        .from('clients')
+        .select('*')
+        .eq('email', user.email)
+        .single();
+        
+      if (error || !data) {
+        alert('ไม่พบข้อมูลบัญชีผู้ใช้งาน หรือบัญชียังไม่ได้รับอนุมัติ กรุณาติดต่อเจ้าหน้าที่ GPO ครับ');
+        router.push('/auth');
+        return;
+      }
+      
+      setClientData(data);
+      // ถ้ามี customer_code ในฐานข้อมูลอยู่แล้ว ให้ดึงมาใส่ใน state
+      if (data.b2b_customer_id) {
+         // หากมีการเชื่อมต่อตาราง b2b_customers ไว้
+      }
+
+      // 3. ดึงเลขที่เอกสาร
       try {
         const nextNumber = await ReturnRepository.getNextDocNumber();
         setDocNumber(nextNumber);
       } catch (error) {
-        console.error("Error fetching doc number:", error);
-        setDocNumber("S001/2026"); // fallback กรณีดึงไม่ได้
+        setDocNumber("S001/2026");
       }
     };
-    fetchDocNumber();
+    
+    init();
 
     setToday(new Date().toLocaleDateString('th-TH', {
       year: 'numeric', month: 'long', day: 'numeric',
     }));
-  }, []);
+  }, [router]);
 
   const handleNext = () => {
     if (!selectedType) return alert('กรุณาเลือกประเภทรายการ');
@@ -77,14 +101,15 @@ export default function Step1Info({ next, updateData }: Step1Props) {
       reason: selectedType, 
       sender: { 
         ...prev.sender, 
-        hospital_name: authData.hospitalName, 
-        province: authData.province,
-        doc_number: docNumber, // ใช้เลขที่รันมาแล้ว
+        hospital_name: clientData?.hospital_name || '', 
+        province: clientData?.province || '',
+        doc_number: docNumber,
+        customer_code: customerCode,
         return_type: selectedType,
         other_detail: selectedType === 'อื่นๆ' ? otherDetail : ''
       },
-      sigFullname: authData.fullname,
-      sigPosition: authData.position
+      sigFullname: clientData?.contact_name || '',
+      sigPosition: clientData?.position || ''
     }));
     next();
   };
@@ -146,37 +171,42 @@ export default function Step1Info({ next, updateData }: Step1Props) {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             <div className="sm:col-span-2 flex flex-col gap-1.5">
               <FieldLabel>ชื่อโรงพยาบาล / ร้านยา / คลินิก</FieldLabel>
-              <input value={authData.hospitalName} readOnly className="w-full px-4 py-3 rounded-xl bg-slate-100 text-slate-500 text-sm border-none outline-none cursor-not-allowed" />
+              <input value={clientData?.hospital_name || 'กำลังโหลด...'} readOnly className="w-full px-4 py-3 rounded-xl bg-slate-100 text-slate-500 text-sm border-none outline-none cursor-not-allowed" />
             </div>
 
             <div className="flex flex-col gap-1.5">
               <FieldLabel>จังหวัด</FieldLabel>
-              <input value={authData.province} readOnly className="w-full px-4 py-3 rounded-xl bg-slate-100 text-slate-500 text-sm border-none outline-none cursor-not-allowed" />
+              <input value={clientData?.province || 'กำลังโหลด...'} readOnly className="w-full px-4 py-3 rounded-xl bg-slate-100 text-slate-500 text-sm border-none outline-none cursor-not-allowed" />
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <FieldLabel>รหัสลูกค้า</FieldLabel>
-              <input value="CUST-12345" readOnly className="px-4 py-3 rounded-xl bg-slate-100 text-slate-500 font-mono text-sm border-none outline-none" />
+              <FieldLabel>รหัสลูกค้า (Customer Code)</FieldLabel>
+              <input 
+                placeholder="กรอกรหัสหน่วยงาน..."
+                value={customerCode}
+                onChange={(e) => setCustomerCode(e.target.value)}
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-sm focus:ring-2 focus:ring-teal-200 outline-none transition" 
+              />
             </div>
 
             <div className="flex flex-col gap-1.5">
               <FieldLabel>โทรศัพท์ติดต่อ</FieldLabel>
-              <input value="074-XXX-XXX" readOnly className="px-4 py-3 rounded-xl bg-slate-100 text-slate-500 font-mono text-sm border-none outline-none" />
+              <input value={clientData?.phone || 'กำลังโหลด...'} readOnly className="px-4 py-3 rounded-xl bg-slate-100 text-slate-500 font-mono text-sm border-none outline-none" />
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <FieldLabel>อีเมลสำหรับรับรหัสอ้างอิง</FieldLabel>
-              <input value="user@email.com" readOnly className="px-4 py-3 rounded-xl bg-slate-100 text-slate-500 text-sm border-none outline-none" />
+              <FieldLabel>อีเมล</FieldLabel>
+              <input value={clientData?.email || 'กำลังโหลด...'} readOnly className="px-4 py-3 rounded-xl bg-slate-100 text-slate-500 text-sm border-none outline-none" />
             </div>
 
             <div className="sm:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-5">
               <div className="flex flex-col gap-1.5">
                 <FieldLabel>ชื่อ-นามสกุล ผู้ส่งคืน</FieldLabel>
-                <input value={authData.fullname} readOnly className="w-full px-4 py-3 rounded-xl bg-slate-100 text-slate-500 text-sm border-none outline-none cursor-not-allowed" />
+                <input value={clientData?.contact_name || 'กำลังโหลด...'} readOnly className="w-full px-4 py-3 rounded-xl bg-slate-100 text-slate-500 text-sm border-none outline-none cursor-not-allowed" />
               </div>
               <div className="flex flex-col gap-1.5">
                 <FieldLabel>ตำแหน่ง</FieldLabel>
-                <input value={authData.position} readOnly className="w-full px-4 py-3 rounded-xl bg-slate-100 text-slate-500 text-sm border-none outline-none cursor-not-allowed" />
+                <input value={clientData?.position || 'กำลังโหลด...'} readOnly className="w-full px-4 py-3 rounded-xl bg-slate-100 text-slate-500 text-sm border-none outline-none cursor-not-allowed" />
               </div>
             </div>
           </div>
