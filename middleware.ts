@@ -2,9 +2,6 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
-  // DEBUG: ดูว่า Middleware กำลังทำงานที่ไหน
-  console.log("Middleware Running on:", request.nextUrl.pathname);
-
   let response = NextResponse.next({
     request: {
       headers: request.headers,
@@ -28,27 +25,18 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  // 1. ตรวจสอบ Session ของผู้ใช้งาน
-  const { data: { user } } = await supabase.auth.getUser()
+  // 1. เปลี่ยนมาใช้ getSession() เพื่ออ่านจาก Cookie (เร็วกว่า getUser มากๆ)
+  const { data: { session } } = await supabase.auth.getSession()
 
-  // DEBUG: ดูว่าตรวจพบ User หรือไม่
-  if (user) {
-    console.log("Middleware Found User:", user.id);
-  } else {
-    console.log("Middleware No User Session Detected");
-  }
-
-  // 2. ถ้ายังไม่มี user และพยายามเข้าหน้าแบบฟอร์ม ให้เด้งไปหน้า /auth
-  if (!user && request.nextUrl.pathname.startsWith('/form')) {
-    console.log("Redirecting to /auth (No Session)");
+  // 2. ถ้าไม่มี session และพยายามเข้าหน้า /form ให้เด้งไปหน้า /auth
+  if (!session && request.nextUrl.pathname.startsWith('/form')) {
     const url = request.nextUrl.clone()
     url.pathname = '/auth'
     return NextResponse.redirect(url)
   }
 
-  // 3. ป้องกันกรณี Login แล้ว แต่เผลอกดกลับไปหน้า Auth ให้ดีดมาหน้า /form
-  if (user && request.nextUrl.pathname.startsWith('/auth')) {
-    console.log("Redirecting to /form (Already Logged In)");
+  // 3. ถ้ามี session แล้วแต่ยังอยู่ในหน้า /auth ให้เด้งไป /form
+  if (session && request.nextUrl.pathname.startsWith('/auth')) {
     const url = request.nextUrl.clone()
     url.pathname = '/form'
     return NextResponse.redirect(url)
