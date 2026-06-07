@@ -9,7 +9,10 @@ if (!SUPABASE_URL || !SUPABASE_KEY) {
   console.error("DEBUG: ENV missing!", { SUPABASE_URL, SUPABASE_KEY });
 }
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabase = createClient
+  process.env.SUPABASE_URL as string,
+  process.env.SUPABASE_KEY as string
+);
 
 /**
  * ฟังก์ชันช่วยแปลงวันที่สำหรับตาราง Database
