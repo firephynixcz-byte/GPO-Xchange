@@ -1,18 +1,18 @@
 import { createClient } from '@supabase/supabase-js';
 import { nanoid } from 'nanoid';
 
-// --- เปลี่ยนมาใช้ process.env เพื่อความปลอดภัย ---
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+// เราจะไม่ประกาศตัวแปร supabase ไว้ข้างบนสุดแบบนั้น
+// แต่เราจะสร้างฟังก์ชันที่ดึงค่าจาก process.env "เมื่อถูกเรียกใช้งานเท่านั้น"
+const getSupabase = () => {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-if (!SUPABASE_URL || !SUPABASE_KEY) {
-  console.error("DEBUG: ENV missing!", { SUPABASE_URL, SUPABASE_KEY });
-}
+  if (!url || !key) {
+    throw new Error("Missing Supabase Environment Variables");
+  }
 
-const supabase = createClient (
-  process.env.SUPABASE_URL as string,
-  process.env.SUPABASE_KEY as string
-);
+  return createClient(url, key);
+};
 
 /**
  * ฟังก์ชันช่วยแปลงวันที่สำหรับตาราง Database
@@ -25,7 +25,7 @@ const sanitizeDate = (date: any) => {
 
 export const ReturnRepository = {
   async getNextDocNumber() {
-    // ใช้ .maybeSingle() เพื่อป้องกัน Error กรณีตารางว่าง
+    const supabase = getSupabase(); // เรียกตรงนี้
     const { data, error } = await supabase
       .from('requests')
       .select('doc_number')
@@ -49,6 +49,7 @@ export const ReturnRepository = {
    * บันทึกข้อมูลใบคำขอทั้งหมดลง Supabase
    */
   async createReturnRequest(data: any) {
+    const supabase = getSupabase(); // เรียกตรงนี้
     const refId = nanoid(10).toUpperCase();
 
     // บันทึกที่ตาราง requests
