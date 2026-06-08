@@ -12,7 +12,7 @@ import { cookies } from 'next/headers';
  */
 
 export async function loginStaff(username: string, password: string) {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   // 1. ดึงข้อมูล Staff จาก DB (ใช้ Service Role Key ใน Server Action เพื่อ bypass RLS)
   const { data: staff, error } = await supabase
