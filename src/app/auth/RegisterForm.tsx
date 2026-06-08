@@ -5,13 +5,13 @@ import SignatureCanvas from 'react-signature-canvas';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 
-// ── Shared styles ──────────────────────────────────────────────────────────
+// ── Shared styles (ปรับสีพื้นหลังเป็น teal-50/50 และ text ให้หนักแน่นขึ้น) ──
 const inputCls =
-  'w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-sm text-slate-800 ' +
-  'focus:outline-none focus:ring-2 focus:ring-teal-200 focus:border-teal-500 transition placeholder:text-slate-300';
+  'w-full px-5 py-4 rounded-xl border border-teal-100 bg-teal-50/50 text-sm font-medium text-slate-900 ' +
+  'focus:outline-none focus:ring-2 focus:ring-teal-200 focus:border-teal-500 transition placeholder:text-slate-400';
 
 const selectCls =
-  'w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-sm text-slate-800 ' +
+  'w-full px-4 py-3 rounded-xl border border-teal-100 bg-teal-50/50 text-sm font-medium text-slate-900 ' +
   'focus:outline-none focus:ring-2 focus:ring-teal-200 focus:border-teal-500 transition ' +
   'appearance-none cursor-pointer ' +
   'bg-[url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 20 20\'%3E%3Cpath stroke=\'%230d9488\' stroke-width=\'1.5\' stroke-linecap=\'round\' d=\'M6 8l4 4 4-4\'/%3E%3C/svg%3E")] ' +
@@ -19,8 +19,8 @@ const selectCls =
 
 function FieldLabel({ children, required }: { children: React.ReactNode; required?: boolean }) {
   return (
-    <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-      {children}{required && <span className="text-red-400 ml-1">*</span>}
+    <label className="text-[11px] font-extrabold text-slate-500 uppercase tracking-widest">
+      {children}{required && <span className="text-teal-600 ml-1">*</span>}
     </label>
   );
 }
@@ -51,18 +51,15 @@ export function RegisterForm() {
 
   const clearSig = () => { sigCanvas.current?.clear(); setSigEmpty(true); };
 
-  // ── Submit ──────────────────────────────────────────────────────────────
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!pdpa)                        return alert('กิตครับ รบกวนกดรับรอง PDPA ก่อนนะ');
+    if (!pdpa) return alert('กิตครับ รบกวนกดรับรอง PDPA ก่อนนะ');
     if (sigCanvas.current?.isEmpty()) return alert('กิตครับ อย่าลืมลงลายมือชื่อนะ');
 
     setLoading(true);
     const signatureBase64 = sigCanvas.current.toDataURL();
     const supabase = createClient();
 
-    // ── INSERT → public.clients ───────────────────────────────────────────
     const { error } = await supabase.from('clients').insert([{
       hospital_name:     formData.hospitalName,
       contact_name:      formData.contactName,
@@ -75,127 +72,70 @@ export function RegisterForm() {
     }]);
 
     if (error) {
-      if (error.code === '23505') {
-        alert('อีเมลนี้ถูกลงทะเบียนแล้วครับ');
-      } else {
-        alert(`โอ๊ะ! มีปัญหาตอนบันทึกครับ: ${error.message}`);
-      }
+      alert(error.code === '23505' ? 'อีเมลนี้ถูกลงทะเบียนแล้วครับ' : `โอ๊ะ! มีปัญหาตอนบันทึกครับ: ${error.message}`);
       setLoading(false);
       return;
     }
 
-    // ── ยิง API ส่งอีเมลต้อนรับ ──────────────────────────────────────────
     try {
       await fetch('/api/send-welcome', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          email: formData.email, 
-          hospitalName: formData.hospitalName 
-        }),
+        body: JSON.stringify({ email: formData.email, hospitalName: formData.hospitalName }),
       });
-    } catch (err) {
-      console.error("ส่งอีเมลไม่สำเร็จ แต่ข้อมูลถูกบันทึกแล้ว:", err);
-    }
+    } catch (err) { console.error("ส่งอีเมลไม่สำเร็จ:", err); }
 
     setDone(true);
     setLoading(false);
   };
 
-  // ── Success state ──────────────────────────────────────────────────────
   if (done) {
     return (
       <div className="flex flex-col items-center gap-4 py-10 text-center">
-        <div className="w-14 h-14 rounded-full bg-teal-50 flex items-center justify-center text-3xl">
-          ✅
-        </div>
+        <div className="w-16 h-16 rounded-full bg-teal-50 flex items-center justify-center text-3xl">✅</div>
         <div>
-          <p className="font-extrabold text-slate-900 text-base">ส่งคำขอลงทะเบียนสำเร็จ!</p>
-          <p className="text-xs text-slate-400 mt-1 leading-relaxed max-w-xs">
-            กิตเดี๋ยวค่อยมาตรวจอนุมัติใน Admin Panel นะครับ
-          </p>
+          <p className="font-black text-slate-800 text-lg">ส่งคำขอลงทะเบียนสำเร็จ!</p>
+          <p className="text-sm text-slate-500 mt-1">กิตเดี๋ยวค่อยมาตรวจอนุมัติใน Admin Panel นะครับ</p>
         </div>
       </div>
     );
   }
 
-  // ── Form ───────────────────────────────────────────────────────────────
   return (
-    <form onSubmit={handleRegister} className="flex flex-col gap-5">
+    <form onSubmit={handleRegister} className="flex flex-col gap-6">
 
-      {/* ชื่อหน่วยงาน — full width */}
       <div className="flex flex-col gap-1.5">
-        <FieldLabel required>ชื่อโรงพยาบาล / ร้านยา / คลินิก / หน่วยงาน</FieldLabel>
-        <input
-          value={formData.hospitalName}
-          onChange={e => set('hospitalName', e.target.value)}
-          placeholder="ระบุชื่อหน่วยงานเต็ม เช่น โรงพยาบาลสงขลา"
-          className={inputCls}
-          required
-        />
+        <FieldLabel required>ชื่อหน่วยงาน</FieldLabel>
+        <input value={formData.hospitalName} onChange={e => set('hospitalName', e.target.value)} placeholder="ระบุชื่อหน่วยงาน เช่น รพ.สงขลา" className={inputCls} required />
       </div>
 
-      {/* ชื่อผู้ประสานงาน — full width */}
       <div className="flex flex-col gap-1.5">
-        <FieldLabel required>ชื่อ-นามสกุล ผู้ขอใช้งานระบบ</FieldLabel>
-        <input
-          value={formData.contactName}
-          onChange={e => set('contactName', e.target.value)}
-          placeholder="ระบุชื่อ-นามสกุลจริง"
-          className={inputCls}
-          required
-        />
+        <FieldLabel required>ชื่อ-นามสกุล ผู้ขอใช้งาน</FieldLabel>
+        <input value={formData.contactName} onChange={e => set('contactName', e.target.value)} placeholder="ระบุชื่อ-นามสกุลจริง" className={inputCls} required />
       </div>
 
-      {/* ตำแหน่ง + จังหวัด */}
       <div className="grid grid-cols-2 gap-4">
         <div className="flex flex-col gap-1.5">
           <FieldLabel required>ตำแหน่ง</FieldLabel>
-          <input
-            value={formData.position}
-            onChange={e => set('position', e.target.value)}
-            placeholder="เช่น เภสัชกร หรือเจ้าหน้าที่หน่วยงาน"
-            className={inputCls}
-            required
-          />
+          <input value={formData.position} onChange={e => set('position', e.target.value)} placeholder="เช่น เภสัชกร" className={inputCls} required />
         </div>
         <div className="flex flex-col gap-1.5">
           <FieldLabel required>จังหวัด</FieldLabel>
-          <select
-            value={formData.province}
-            onChange={e => set('province', e.target.value)}
-            className={selectCls}
-            required
-          >
+          <select value={formData.province} onChange={e => set('province', e.target.value)} className={selectCls} required>
             <option value="">-- เลือกจังหวัด --</option>
             {PROVINCES.map(p => <option key={p} value={p}>{p}</option>)}
           </select>
         </div>
       </div>
 
-      {/* โทร + อีเมล */}
       <div className="grid grid-cols-2 gap-4">
         <div className="flex flex-col gap-1.5">
-          <FieldLabel required>เบอร์โทรศัพท์ติดต่อ</FieldLabel>
-          <input
-            type="tel"
-            value={formData.phone}
-            onChange={e => set('phone', e.target.value)}
-            placeholder="0XX-XXX-XXXX"
-            className={inputCls}
-            required
-          />
+          <FieldLabel required>เบอร์โทรศัพท์</FieldLabel>
+          <input type="tel" value={formData.phone} onChange={e => set('phone', e.target.value)} placeholder="0XX-XXX-XXXX" className={inputCls} required />
         </div>
         <div className="flex flex-col gap-1.5">
           <FieldLabel required>อีเมลล์ (Email)</FieldLabel>
-          <input
-            type="email"
-            value={formData.email}
-            onChange={e => set('email', e.target.value)}
-            placeholder="example@hospital.go.th"
-            className={inputCls}
-            required
-          />
+          <input type="email" value={formData.email} onChange={e => set('email', e.target.value)} placeholder="example@hospital.go.th" className={inputCls} required />
         </div>
       </div>
 
