@@ -35,7 +35,7 @@ const PROVINCES = [
 ];
 
 // ── Component ──────────────────────────────────────────────────────────────
-export function RegisterForm() {
+export function RegisterForm({ setView }: RegisterFormProps) {
   const sigCanvas = useRef<any>(null);
   const [sigEmpty,  setSigEmpty]  = useState(true);
   const [pdpa,      setPdpa]      = useState(false);
