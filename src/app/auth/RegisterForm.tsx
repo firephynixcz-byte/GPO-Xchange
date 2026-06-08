@@ -5,6 +5,11 @@ import SignatureCanvas from 'react-signature-canvas';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 
+// ── ประกาศ Interface ไว้ตรงนี้ เพื่อให้ TypeScript รู้จัก props ──
+interface RegisterFormProps {
+  setView: (view: 'gateway' | 'register') => void;
+}
+
 // ── Shared styles (ปรับสีพื้นหลังเป็น teal-50/50 และ text ให้หนักแน่นขึ้น) ──
 const inputCls =
   'w-full px-5 py-4 rounded-xl border border-teal-100 bg-teal-50/50 text-sm font-medium text-slate-900 ' +
