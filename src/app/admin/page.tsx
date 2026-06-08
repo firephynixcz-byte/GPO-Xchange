@@ -45,7 +45,7 @@ export default function AdminHubPage() {
           <div className="absolute -bottom-20 left-0 w-72 h-72 bg-emerald-300/10 rounded-full blur-3xl" />
 
           <div className="absolute top-6 right-6 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-white/80 text-xs font-semibold backdrop-blur">
-            Xchange Portal v2.0
+            ส่วนของพนักงาน GPO
           </div>
 
           <div className="relative flex flex-col md:flex-row md:items-center gap-8">
