@@ -10,9 +10,10 @@ export default async function StaffDashboardPage() {
   if (!session) redirect('/admin');
 
   const user = JSON.parse(session.value);
-  const supabase = createClient();
+  
+  // สำคัญ: ต้อง await ตรงนี้ครับ
+  const supabase = await createClient();
 
-  // ดึงข้อมูล 2 อย่างพร้อมกัน เพื่อประสิทธิภาพสูงสุด
   const [requestsRes, staffRes] = await Promise.all([
     supabase
       .from('requests')
@@ -20,7 +21,6 @@ export default async function StaffDashboardPage() {
       .eq('department', user.department)
       .order('created_at', { ascending: false }),
     
-    // ดึงพนักงานรออนุมัติ (ให้เห็นเฉพาะ CSR)
     supabase
       .from('staff_users')
       .select('*')
