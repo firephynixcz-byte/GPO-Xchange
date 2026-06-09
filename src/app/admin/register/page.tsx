@@ -37,7 +37,7 @@ export default function RegisterPage() {
       alert("ลงทะเบียนเรียบร้อย รอ Admin อนุมัติสิทธิ์นะครับ");
       router.push('/admin');
     } else {
-      alert("เกิดข้อผิดพลาด: " + result.error.message);
+      alert("เกิดข้อผิดพลาด: " + (result.error?.message || "ไม่ทราบสาเหตุ"));
     }
     setLoading(false);
   };
