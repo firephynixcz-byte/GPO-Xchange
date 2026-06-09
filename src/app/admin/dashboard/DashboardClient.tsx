@@ -2,16 +2,30 @@
 
 import { useState } from 'react';
 import { StatusActions } from '@/components/StatusActions';
-import { approveStaff } from '@/actions/staff-register'; // กิตสร้างฟังก์ชันนี้ไว้ในไฟล์ Action นะครับ
+import { approveStaff } from '@/actions/staff-register';
 
-export function DashboardClient({ user, initialRequests, pendingStaff }) {
-  const [requests] = useState(initialRequests);
+// กำหนด Type ให้ Props เพื่อแก้ปัญหา Implicit 'any'
+interface DashboardClientProps {
+  user: {
+    department: string;
+    [key: string]: any;
+  };
+  initialRequests: any[];
+  pendingStaff: any[];
+}
+
+export function DashboardClient({ user, initialRequests, pendingStaff }: DashboardClientProps) {
+  const [requests] = useState(initialRequests || []);
   const [staffList, setStaffList] = useState(pendingStaff || []);
 
   const handleApprove = async (staffId: string) => {
-    await approveStaff(staffId);
-    setStaffList(staffList.filter(s => s.id !== staffId));
-    alert("อนุมัติสิทธิ์เรียบร้อยครับ");
+    try {
+      await approveStaff(staffId);
+      setStaffList(staffList.filter((s) => s.id !== staffId));
+      alert("อนุมัติสิทธิ์เรียบร้อยครับ");
+    } catch (error) {
+      alert("เกิดข้อผิดพลาดในการอนุมัติ");
+    }
   };
 
   return (
@@ -27,7 +41,7 @@ export function DashboardClient({ user, initialRequests, pendingStaff }) {
           <section className="mb-8 p-6 bg-amber-50 border border-amber-200 rounded-3xl">
             <h2 className="text-lg font-black text-amber-900 mb-4">พนักงานรอการอนุมัติ ({staffList.length})</h2>
             <div className="grid gap-3">
-              {staffList.map(staff => (
+              {staffList.map((staff) => (
                 <div key={staff.id} className="flex justify-between items-center bg-white p-4 rounded-xl border">
                   <div>
                     <p className="font-bold">{staff.full_name}</p>
@@ -64,7 +78,7 @@ export function DashboardClient({ user, initialRequests, pendingStaff }) {
                   <td className="p-4 font-medium text-slate-900">{req.hospital_name}</td>
                   
                   <td className="p-4 space-y-2">
-                    {req.drug_items?.map((item) => (
+                    {req.drug_items?.map((item: any) => (
                       <div key={item.id} className="flex items-center justify-between p-2 bg-white border border-slate-100 rounded-lg shadow-sm">
                         <span className="text-xs font-medium text-slate-700">{item.item_name}</span>
                         <span className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase ${
