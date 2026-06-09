@@ -14,7 +14,7 @@ import { cookies } from 'next/headers';
 export async function loginStaff(username: string, password: string) {
   const supabase = await createClient();
 
-  // 1. ดึงข้อมูล Staff จาก DB (ใช้ Service Role Key ใน Server Action เพื่อ bypass RLS)
+  // 1. ดึงข้อมูล Staff จาก DB
   const { data: staff, error } = await supabase
     .from('staff_users')
     .select('*')
@@ -32,7 +32,12 @@ export async function loginStaff(username: string, password: string) {
     return { success: false, message: 'รหัสผ่านไม่ถูกต้องครับ' };
   }
 
-  // 3. สร้าง Session ใน Cookie
+  // 3. ตรวจสอบการอนุมัติสิทธิ์ (Admin Approval)
+  if (!staff.is_approved) {
+    return { success: false, message: 'บัญชีนี้ยังไม่ได้รับการอนุมัติจาก Admin ครับ' };
+  }
+
+  // 4. สร้าง Session ใน Cookie
   const cookieStore = await cookies();
   
   // ตั้งค่า Session
@@ -40,7 +45,8 @@ export async function loginStaff(username: string, password: string) {
     id: staff.id,
     username: staff.username,
     department: staff.department,
-    full_name: staff.full_name
+    full_name: staff.full_name,
+    role: staff.role // เพิ่ม role เข้าไปเผื่อต้องใช้ตรวจสอบสิทธิ์ขั้นสูง
   }), { 
     httpOnly: true, 
     secure: process.env.NODE_ENV === 'production',

@@ -131,22 +131,7 @@ export default function AdminHubPage() {
                 placeholder="Username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="
-                  w-full
-                  px-5
-                  py-3.5
-                  rounded-xl
-                  border
-                  border-slate-300
-                  bg-white
-                  text-slate-800
-                  placeholder:text-slate-400
-                  focus:border-teal-500
-                  focus:ring-4
-                  focus:ring-teal-100
-                  outline-none
-                  transition-all
-                "
+                className="w-full px-5 py-3.5 rounded-xl border border-slate-300 bg-white text-slate-800 placeholder:text-slate-400 focus:border-teal-500 focus:ring-4 focus:ring-teal-100 outline-none transition-all"
               />
 
               <input
@@ -155,46 +140,30 @@ export default function AdminHubPage() {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="
-                  w-full
-                  px-5
-                  py-3.5
-                  rounded-xl
-                  border
-                  border-slate-300
-                  bg-white
-                  text-slate-800
-                  placeholder:text-slate-400
-                  focus:border-teal-500
-                  focus:ring-4
-                  focus:ring-teal-100
-                  outline-none
-                  transition-all
-                "
+                className="w-full px-5 py-3.5 rounded-xl border border-slate-300 bg-white text-slate-800 placeholder:text-slate-400 focus:border-teal-500 focus:ring-4 focus:ring-teal-100 outline-none transition-all"
               />
 
               <button
                 type="submit"
                 disabled={loading}
-                className="
-                  w-full
-                  py-4
-                  rounded-xl
-                  text-sm
-                  font-bold
-                  text-white
-                  bg-gradient-to-r
-                  from-teal-600
-                  to-emerald-600
-                  hover:from-teal-700
-                  hover:to-emerald-700
-                  shadow-lg
-                  shadow-teal-500/20
-                  transition-all
-                  active:scale-[0.98]
-                "
+                className="w-full py-4 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 shadow-lg shadow-teal-500/20 transition-all active:scale-[0.98]"
               >
                 {loading ? 'กำลังตรวจสอบ...' : 'เข้าสู่ระบบ →'}
+              </button>
+
+              {/* ปุ่มทางเลือกสำหรับลงทะเบียน */}
+              <div className="flex items-center gap-4 py-2 text-slate-400 text-xs font-bold uppercase tracking-widest">
+                <div className="flex-1 h-px bg-slate-200" />
+                หรือ
+                <div className="flex-1 h-px bg-slate-200" />
+              </div>
+
+              <button
+                type="button"
+                onClick={() => router.push('/admin/register')}
+                className="w-full py-4 rounded-xl text-sm font-bold text-teal-700 border-2 border-teal-600 hover:bg-teal-50 transition-all active:scale-[0.98]"
+              >
+                ลงทะเบียนพนักงานใหม่
               </button>
 
             </div>
@@ -204,53 +173,23 @@ export default function AdminHubPage() {
           <div className="bg-gradient-to-br from-amber-500 to-orange-500 rounded-3xl shadow-xl p-8 text-white flex flex-col">
 
             <div className="flex items-center justify-between mb-6">
-
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center text-2xl">
-                  📊
-                </div>
-
+                <div className="w-14 h-14 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center text-2xl">📊</div>
                 <div>
-                  <h2 className="text-lg font-extrabold">
-                    Dashboard Management
-                  </h2>
-
-                  <p className="text-sm text-white/70">
-                    วิเคราะห์ภาพรวมงานสำหรับผู้บริหาร
-                  </p>
+                  <h2 className="text-lg font-extrabold">Dashboard Management</h2>
+                  <p className="text-sm text-white/70">วิเคราะห์ภาพรวมงานสำหรับผู้บริหาร</p>
                 </div>
               </div>
-
-              <span className="px-3 py-1 rounded-full bg-white/15 border border-white/20 text-xs font-semibold">
-                Coming Soon
-              </span>
-
+              <span className="px-3 py-1 rounded-full bg-white/15 border border-white/20 text-xs font-semibold">Coming Soon</span>
             </div>
 
             <div className="h-px bg-white/15 mb-6" />
 
             <p className="text-white/90 leading-relaxed flex-1">
-              ส่วนการแสดงผลภาพรวมสถานะงาน (Visual Board)
-              เพื่อติดตามประสิทธิภาพการดำเนินงานแบบ Real-time
-              และสนับสนุนการตัดสินใจของผู้บริหาร
+              ส่วนการแสดงผลภาพรวมสถานะงาน (Visual Board) เพื่อติดตามประสิทธิภาพการดำเนินงานแบบ Real-time และสนับสนุนการตัดสินใจของผู้บริหาร
             </p>
 
-            <button
-              disabled
-              className="
-                mt-6
-                w-full
-                py-4
-                rounded-xl
-                bg-white/20
-                border
-                border-white/20
-                text-white
-                font-bold
-                cursor-not-allowed
-                backdrop-blur
-              "
-            >
+            <button disabled className="mt-6 w-full py-4 rounded-xl bg-white/20 border border-white/20 text-white font-bold cursor-not-allowed backdrop-blur">
               อยู่ระหว่างการพัฒนา
             </button>
           </div>
@@ -259,36 +198,15 @@ export default function AdminHubPage() {
 
         {/* Footer */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pt-6 border-t border-slate-200">
-
           <button
             onClick={() => router.push('/')}
-            className="
-              flex
-              items-center
-              gap-2
-              px-6
-              py-3
-              rounded-full
-              border-2
-              border-teal-600
-              text-teal-700
-              text-xs
-              font-bold
-              uppercase
-              tracking-widest
-              hover:bg-teal-600
-              hover:text-white
-              transition-all
-              w-fit
-            "
+            className="flex items-center gap-2 px-6 py-3 rounded-full border-2 border-teal-600 text-teal-700 text-xs font-bold uppercase tracking-widest hover:bg-teal-600 hover:text-white transition-all w-fit"
           >
             ← กลับหน้าหลัก
           </button>
-
           <p className="text-xs text-slate-500 font-medium">
             พบปัญหาการใช้งานระบบ ติดต่อ GPO สาขาภาคใต้ โทร. 074-230547
           </p>
-
         </div>
       </div>
     </main>
