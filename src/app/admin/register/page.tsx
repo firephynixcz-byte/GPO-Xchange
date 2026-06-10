@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { registerStaff } from '@/actions/staff-register';
 import { useRouter } from 'next/navigation';
 
-// ── Shared Styles ตามรูปแบบที่กิตต้องการ ──
+// ── Shared Styles ──
 const inputCls =
   'w-full px-5 py-4 rounded-xl border border-teal-100 bg-teal-50/50 text-sm font-medium text-slate-900 ' +
   'focus:outline-none focus:ring-2 focus:ring-teal-200 focus:border-teal-500 transition placeholder:text-slate-400';
@@ -76,6 +76,7 @@ export default function RegisterPage() {
               <option value="csr">CSR - Customer Service</option>
               <option value="log">LOG - Logistics</option>
               <option value="wh">WH - Warehouse</option>
+              <option value="manager">Manager - Management</option>
             </select>
           </div>
 
@@ -91,7 +92,7 @@ export default function RegisterPage() {
       {/* ปุ่มย้อนกลับ */}
       <button
         onClick={() => router.push('/admin')}
-        className="fixed bottom-10 left-40 flex items-center gap-2 px-6 py-3 rounded-full border-2 border-teal-600 text-teal-700 text-xs font-bold uppercase tracking-widest hover:bg-teal-600 hover:text-white transition-all"
+        className="fixed bottom-10 left-10 flex items-center gap-2 px-6 py-3 rounded-full border-2 border-teal-600 text-teal-700 text-xs font-bold uppercase tracking-widest hover:bg-teal-600 hover:text-white transition-all"
       >
         ← ย้อนกลับ
       </button>

@@ -1,13 +1,15 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { StatusActions } from '@/components/StatusActions';
-import { approveStaff } from '@/actions/staff-register';
+import { approveStaffByManager } from '@/actions/admin-actions';
+import { DashboardStats } from '@/components/DashboardStats';
 
-// กำหนด Type ให้ Props เพื่อแก้ปัญหา Implicit 'any'
 interface DashboardClientProps {
   user: {
     department: string;
+    role: string;
     [key: string]: any;
   };
   initialRequests: any[];
@@ -18,13 +20,20 @@ export function DashboardClient({ user, initialRequests, pendingStaff }: Dashboa
   const [requests] = useState(initialRequests || []);
   const [staffList, setStaffList] = useState(pendingStaff || []);
 
+  const isManager = user.role === 'admin' || user.role === 'manager';
+  const canApproveStaff = isManager || user.department === 'csr';
+
   const handleApprove = async (staffId: string) => {
     try {
-      await approveStaff(staffId);
-      setStaffList(staffList.filter((s) => s.id !== staffId));
-      alert("อนุมัติสิทธิ์เรียบร้อยครับ");
+      const result = await approveStaffByManager(staffId);
+      if (result.success) {
+        setStaffList(staffList.filter((s) => s.id !== staffId));
+        alert("อนุมัติสิทธิ์เรียบร้อยครับ");
+      } else {
+        alert(result.error);
+      }
     } catch (error) {
-      alert("เกิดข้อผิดพลาดในการอนุมัติ");
+      alert("เกิดข้อผิดพลาดในการเชื่อมต่อกับ Server");
     }
   };
 
@@ -32,24 +41,32 @@ export function DashboardClient({ user, initialRequests, pendingStaff }: Dashboa
     <main className="min-h-screen bg-slate-50 p-6 md:p-10">
       <div className="max-w-6xl mx-auto">
         <header className="mb-10">
-          <h1 className="text-3xl font-black text-slate-900">Dashboard: {user.department}</h1>
-          <p className="text-slate-500">จัดการรายการใบงานและอัปเดตสถานะสำหรับพนักงาน</p>
+          <h1 className="text-3xl font-black text-slate-900">
+            Dashboard: {user.department} {isManager && <span className="text-teal-600">(Manager Mode)</span>}
+          </h1>
+          <p className="text-slate-500">จัดการรายการใบงานและอนุมัติพนักงานในระบบ</p>
         </header>
 
-        {/* ส่วนอนุมัติพนักงาน (แสดงเฉพาะ CSR) */}
-        {user.department === 'csr' && staffList.length > 0 && (
+        {/* แสดงผลสถิติที่กิตเขียนไว้ */}
+        <DashboardStats 
+          totalRequests={requests.length} 
+          pendingStaff={staffList.length} 
+        />
+
+        {/* ส่วนอนุมัติพนักงาน */}
+        {canApproveStaff && staffList.length > 0 && (
           <section className="mb-8 p-6 bg-amber-50 border border-amber-200 rounded-3xl">
             <h2 className="text-lg font-black text-amber-900 mb-4">พนักงานรอการอนุมัติ ({staffList.length})</h2>
             <div className="grid gap-3">
               {staffList.map((staff) => (
-                <div key={staff.id} className="flex justify-between items-center bg-white p-4 rounded-xl border">
+                <div key={staff.id} className="flex justify-between items-center bg-white p-4 rounded-xl border border-amber-100 shadow-sm">
                   <div>
-                    <p className="font-bold">{staff.full_name}</p>
-                    <p className="text-xs text-slate-500 uppercase">{staff.department}</p>
+                    <p className="font-bold text-slate-900">{staff.full_name}</p>
+                    <p className="text-xs font-bold text-amber-600 uppercase tracking-wider">{staff.department}</p>
                   </div>
                   <button 
                     onClick={() => handleApprove(staff.id)}
-                    className="px-4 py-2 bg-teal-600 text-white rounded-lg text-xs font-bold"
+                    className="px-4 py-2 bg-teal-600 text-white rounded-lg text-xs font-bold hover:bg-teal-700 transition-all"
                   >
                     อนุมัติสิทธิ์
                   </button>
@@ -80,7 +97,7 @@ export function DashboardClient({ user, initialRequests, pendingStaff }: Dashboa
                   <td className="p-4 space-y-2">
                     {req.drug_items?.map((item: any) => (
                       <div key={item.id} className="flex items-center justify-between p-2 bg-white border border-slate-100 rounded-lg shadow-sm">
-                        <span className="text-xs font-medium text-slate-700">{item.item_name}</span>
+                        <span className="text-xs font-medium text-slate-700">{item.drug_name}</span>
                         <span className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase ${
                           item.exp_status === 'pass' ? 'bg-green-100 text-green-700' : 
                           item.exp_status === 'near' ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'
@@ -109,6 +126,14 @@ export function DashboardClient({ user, initialRequests, pendingStaff }: Dashboa
           </table>
         </div>
       </div>
+
+      {/* ปุ่มย้อนกลับ */}
+      <Link
+        href="/admin"
+        className="fixed bottom-8 left-8 z-50 flex items-center gap-2 px-6 py-3 rounded-full border-2 border-teal-600 bg-white text-teal-700 text-xs font-bold uppercase tracking-widest hover:bg-teal-600 hover:text-white transition-all shadow-lg active:scale-95"
+      >
+        ← ย้อนกลับ
+      </Link>
     </main>
   );
 }

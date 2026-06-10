@@ -28,8 +28,8 @@ export default function HomePage() {
           
           {/* Hero Section */}
           <div className="bg-gradient-to-r from-green-700 to-blue-600 p-8 md:p-12 rounded-[2.5rem] text-center text-white shadow-2xl">
-            <h1 className="text-3xl md:text-5xl font-black mb-4">GPO XCHANGE PORTAL PLATFORM</h1>
-            <p className="text-sm md:text-lg opacity-90 mb-6">ระบบรับคืนและแลกเปลี่ยนสินค้า แบบ One stop service พร้อม Tracking systems</p>
+            <h1 className="text-3xl md:text-5xl font-sans mb-4">GPO XCHANGE PORTAL PLATFORM</h1>
+            <p className="text-sm md:text-sm opacity-90 mb-6">ระบบรับคืนและแลกเปลี่ยนสินค้า One stop service พร้อม Tracking systems</p>
             <div className="flex flex-wrap justify-center gap-3">
               <span className="bg-white/20 backdrop-blur px-4 py-2 rounded-full text-[10px] md:text-xs font-medium flex items-center gap-2 border border-white/20">🏥 <span>รองรับทุกหน่วยงาน</span></span>
               <span className="bg-white/20 backdrop-blur px-4 py-2 rounded-full text-[10px] md:text-xs font-medium flex items-center gap-2 border border-white/20">⚡ <span>ติดตามแบบ Real-time</span></span>
@@ -39,7 +39,7 @@ export default function HomePage() {
 
           {/* ส่วนของลูกค้า */}
           <section className="bg-white p-6 md:p-10 rounded-3xl shadow-sm border border-teal-200 mb-8">
-            <h2 className="text-base font-black text-teal-950 mb-6 flex items-center gap-2 uppercase tracking-wider">🏠 ส่วนของลูกค้า (Customers)</h2>
+            <h2 className="text-base fontsans text-teal-950 mb-6 flex items-center gap-2 uppercase tracking-wider">ส่วนของลูกค้า (Customers)</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <a href="/status" className="group bg-teal-50 p-6 rounded-2xl border border-teal-100 hover:border-teal-400 shadow-sm transition-all hover:-translate-y-2 hover:shadow-xl flex items-center justify-between border-l-8 border-l-teal-500 md:border-l-transparent hover:md:border-l-teal-500">
                 <div className="flex items-center gap-4"><div className="bg-white p-3 rounded-xl text-xl shadow-sm">🔍</div><div><h3 className="font-black text-teal-950 text-sm">ตรวจสอบสถานะงาน</h3><p className="text-[11px] text-teal-700/70">ติดตามงานด้วยรหัสอ้างอิง</p></div></div>
@@ -67,7 +67,7 @@ export default function HomePage() {
 
           {/* ส่วนพนักงาน */}
           <section className="bg-white p-6 md:p-10 rounded-3xl shadow-sm border border-teal-200">
-            <h2 className="text-base font-black text-teal-950 mb-6 flex items-center gap-2 uppercase tracking-wider">🧑‍💼 ส่วนของพนักงาน GPO (GPO Staff)</h2>
+            <h2 className="text-base font-sans text-teal-950 mb-6 flex items-center gap-2 uppercase tracking-wider">ส่วนของพนักงาน GPO (GPO Staff)</h2>
             <a href="/admin" className="group bg-teal-50 p-5 rounded-2xl border border-teal-100 hover:border-teal-500 shadow-sm transition-all hover:-translate-y-2 hover:shadow-xl flex items-center justify-between border-l-8 border-l-teal-500">
               <div className="flex items-center gap-4"><div className="bg-white p-3 rounded-xl text-xl shadow-sm">👤</div><div><h3 className="font-black text-teal-950 text-sm">สำหรับพนักงาน GPO</h3><p className="text-[11px] text-teal-700/70">อัปเดตข้อมูล CSR / ขนส่ง / คลัง</p></div></div>
               <span className="text-teal-300 group-hover:text-teal-600 font-black text-xl">›</span>
@@ -98,15 +98,6 @@ export default function HomePage() {
               <div className="flex gap-3"><span className="text-[#2dd4bf] mt-0.5">💼</span><p className="leading-5">ติดต่อสำนักงาน: วันจันทร์ - วันศุกร์ เวลา 08:00 น. - 16:00 น. (เว้นวันหยุดราชการ)</p></div>
               <div className="flex gap-3"><span className="text-[#2dd4bf] mt-0.5">🌐</span><p className="leading-5">ระบบบริการออนไลน์และ Tracking: เปิดใช้งานตลอด 24 ชั่วโมง</p></div>
             </div>
-          </div>
-        </div>
-        <div className="w-full mt-8 pt-8 border-t border-[#1e293b] flex justify-center">
-          <div className="flex flex-wrap rounded-full justify-center gap-7 w-full max-w-4xl">
-            {[
-              { label: '☁️ Cloud-Native', color: 'bg-cyan-700' }, { label: '🖥️ AWS Supabase', color: 'bg-slate-600' }, { label: '📱 Mobile-First', color: 'bg-blue-700' }, { label: '🤖 Auto PDF', color: 'bg-purple-700' }, { label: '✅ GDP Standard', color: 'bg-emerald-700' },
-            ].map((item, i) => (
-              <span key={i} className={`${item.color} text-white px-3 py-1 rounded-md text-[9px] font-black uppercase tracking-wider shadow-sm border border-white/5`}>{item.label}</span>
-            ))}
           </div>
         </div>
       </footer>

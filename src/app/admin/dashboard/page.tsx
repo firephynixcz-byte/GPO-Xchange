@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
-import { DashboardClient } from './DashboardClient';
+import { DashboardClient } from './DashboardClient'; // ต้องมั่นใจว่าไฟล์นี้อยู่โฟลเดอร์เดียวกัน
 
 export default async function StaffDashboardPage() {
   const cookieStore = await cookies();
@@ -10,14 +10,12 @@ export default async function StaffDashboardPage() {
   if (!session) redirect('/admin');
 
   const user = JSON.parse(session.value);
-  
-  // สำคัญ: ต้อง await ตรงนี้ครับ
   const supabase = await createClient();
 
   const [requestsRes, staffRes] = await Promise.all([
     supabase
       .from('requests')
-      .select('*, drug_items(id, item_name, exp_status, quantity)')
+      .select('*, drug_items(id, drug_name, exp_status, qty)')
       .eq('department', user.department)
       .order('created_at', { ascending: false }),
     
@@ -29,14 +27,15 @@ export default async function StaffDashboardPage() {
   ]);
 
   if (requestsRes.error) {
-    return <div className="p-10 text-red-600">โหลดข้อมูลใบงานผิดพลาด: {requestsRes.error.message}</div>;
+    return <div className="p-10 text-red-600">โหลดข้อมูลใบงานผิดพลาด</div>;
   }
 
+  // นี่คือจุดสำคัญ: เราส่ง Data เข้าไปให้ DashboardClient แบบนี้
   return (
     <DashboardClient 
       user={user} 
       initialRequests={requestsRes.data || []} 
-      pendingStaff={staffRes.data || []} // ส่ง list พนักงานที่รออนุมัติไป
+      pendingStaff={staffRes.data || []} 
     />
   );
 }
