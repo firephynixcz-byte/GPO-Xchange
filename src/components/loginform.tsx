@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { loginStaff } from '@/app/actions/staff-auth'; // ปรับ Path ให้ตรงกับที่กิตเก็บไฟล์ Server Action
+import { loginStaff } from '@/actions/staff-auth';
 
 export default function LoginForm() {
   const [username, setUsername] = useState('');
