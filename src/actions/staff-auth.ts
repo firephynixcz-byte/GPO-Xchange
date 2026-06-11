@@ -4,38 +4,32 @@ import { createClient } from '@/lib/supabase/server';
 import bcrypt from 'bcryptjs';
 import { cookies } from 'next/headers';
 
-/**
- * ฟังก์ชันสำหรับ Login พนักงาน
- */
 export async function loginStaff(username: string, password: string) {
   const supabase = await createClient();
 
-  const { data: staff, error } = await supabase
-    .schema('public')
+  // ดึงข้อมูลเป็น Array (ป้องกันปัญหา .single() ที่ทำให้พัง)
+  const { data: staffList, error } = await supabase
     .from('staff_users')
     .select('*')
     .eq('username', username.trim());
 
-  if (error || !staff) {
+  // เช็ค Error หรือไม่มีข้อมูล
+  if (error || !staffList || staffList.length === 0) {
     return { success: false, message: 'ไม่พบผู้ใช้งานนี้ในระบบ' };
   }
 
-  const staff = staffList[0];
-  
-  const isMatch = await bcrypt.compare(password, staff.password_hash);
+  // ใช้ selectedStaff ตัวเดียวตลอดทั้งไฟล์
+  const selectedStaff = staffList[0];
+
+  const isMatch = await bcrypt.compare(password, selectedStaff.password_hash);
   if (!isMatch) {
     return { success: false, message: 'รหัสผ่านไม่ถูกต้อง' };
   }
 
-  console.log("DEBUG: Username:", username);
-  console.log("DEBUG: Is password match:", isMatch);
-
-  // ตรวจสอบสถานะการอนุมัติ
   if (selectedStaff.is_approved !== true) {
     return { success: false, message: 'บัญชีนี้ยังไม่ได้รับการอนุมัติ กรุณาติดต่อ Manager' };
   }
 
-  // สร้าง Session Cookie
   const cookieStore = await cookies();
   cookieStore.set('staff_session', JSON.stringify({
     id: selectedStaff.id,
@@ -48,20 +42,14 @@ export async function loginStaff(username: string, password: string) {
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
     path: '/',
-    maxAge: 60 * 60 * 8 // 8 ชั่วโมง
+    maxAge: 60 * 60 * 8
   });
 
   return { success: true, department: selectedStaff.department };
 }
 
-/**
- * ฟังก์ชันสำหรับ Logout พนักงาน
- */
 export async function logoutStaff() {
   const cookieStore = await cookies();
-  
-  // ลบ Cookie ของ Session ออก
   cookieStore.delete('staff_session');
-  
   return { success: true };
 }
