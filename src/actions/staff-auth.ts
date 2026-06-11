@@ -7,32 +7,39 @@ import { cookies } from 'next/headers';
 export async function loginStaff(username: string, password: string) {
   const supabase = await createClient();
 
-  // ดึงข้อมูลเป็น Array (ป้องกันปัญหา .single() ที่ทำให้พัง)
+  // 1. ใช้ .select('id, username, password_hash, department, full_name, role, is_approved')
+  // เพื่อให้มั่นใจว่าดึงทุก field ที่จำเป็นออกมาได้จริงๆ
   const { data: staffList, error } = await supabase
     .from('staff_users')
-    .select('*')
-    .eq('username', username.trim());
+    .select('id, username, password_hash, department, full_name, role, is_approved')
+    .ilike('username', username.trim()); 
 
-  // เช็ค Error หรือไม่มีข้อมูล
-  if (error || !staffList || staffList.length === 0) {
+  if (error) {
+    console.error("DB Error:", error);
+    return { success: false, message: 'เกิดข้อผิดพลาดในการเชื่อมต่อฐานข้อมูล' };
+  }
+
+  if (!staffList || staffList.length === 0) {
     return { success: false, message: 'ไม่พบผู้ใช้งานนี้ในระบบ' };
   }
 
-  // ใช้ selectedStaff ตัวเดียวตลอดทั้งไฟล์
   const selectedStaff = staffList[0];
 
+  // 2. เปรียบเทียบ Password
   const isMatch = await bcrypt.compare(password, selectedStaff.password_hash);
   if (!isMatch) {
     return { success: false, message: 'รหัสผ่านไม่ถูกต้อง' };
   }
 
+  // 3. ตรวจสอบสถานะการอนุมัติ
   if (selectedStaff.is_approved !== true) {
     return { success: false, message: 'บัญชีนี้ยังไม่ได้รับการอนุมัติ กรุณาติดต่อ Manager' };
   }
 
+  // 4. สร้าง Session (แปลง ID เป็น string ชัดเจน)
   const cookieStore = await cookies();
   cookieStore.set('staff_session', JSON.stringify({
-    id: selectedStaff.id,
+    id: String(selectedStaff.id), // บังคับเป็น String เพื่อป้องกันปัญหา UUID
     username: selectedStaff.username,
     department: selectedStaff.department,
     full_name: selectedStaff.full_name,
