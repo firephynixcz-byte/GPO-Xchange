@@ -20,6 +20,8 @@ export async function loginStaff(username: string, password: string) {
     return { success: false, message: 'ไม่พบผู้ใช้งานนี้ในระบบ' };
   }
 
+  const staff = staffList[0];
+  
   const isMatch = await bcrypt.compare(password, staff.password_hash);
   if (!isMatch) {
     return { success: false, message: 'รหัสผ่านไม่ถูกต้อง' };
