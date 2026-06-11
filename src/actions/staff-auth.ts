@@ -25,6 +25,9 @@ export async function loginStaff(username: string, password: string) {
     return { success: false, message: 'รหัสผ่านไม่ถูกต้อง' };
   }
 
+  console.log("DEBUG: Username:", username);
+  console.log("DEBUG: Is password match:", isMatch);
+
   // ตรวจสอบสถานะการอนุมัติ
   if (staff.is_approved !== true) {
     return { success: false, message: 'บัญชีนี้ยังไม่ได้รับการอนุมัติ กรุณาติดต่อ Manager' };
