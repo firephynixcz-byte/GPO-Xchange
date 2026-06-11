@@ -11,10 +11,10 @@ export async function loginStaff(username: string, password: string) {
   const supabase = await createClient();
 
   const { data: staff, error } = await supabase
+    .schema('public')
     .from('staff_users')
     .select('*')
-    .eq('username', username)
-    .single();
+    .eq('username', username.trim());
 
   if (error || !staff) {
     return { success: false, message: 'ไม่พบผู้ใช้งานนี้ในระบบ' };
