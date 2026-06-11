@@ -31,18 +31,18 @@ export async function loginStaff(username: string, password: string) {
   console.log("DEBUG: Is password match:", isMatch);
 
   // ตรวจสอบสถานะการอนุมัติ
-  if (staff.is_approved !== true) {
+  if (selectedStaff.is_approved !== true) {
     return { success: false, message: 'บัญชีนี้ยังไม่ได้รับการอนุมัติ กรุณาติดต่อ Manager' };
   }
 
   // สร้าง Session Cookie
   const cookieStore = await cookies();
   cookieStore.set('staff_session', JSON.stringify({
-    id: staff.id,
-    username: staff.username,
-    department: staff.department,
-    full_name: staff.full_name,
-    role: staff.role
+    id: selectedStaff.id,
+    username: selectedStaff.username,
+    department: selectedStaff.department,
+    full_name: selectedStaff.full_name,
+    role: selectedStaff.role
   }), { 
     httpOnly: true, 
     secure: process.env.NODE_ENV === 'production',
@@ -51,7 +51,7 @@ export async function loginStaff(username: string, password: string) {
     maxAge: 60 * 60 * 8 // 8 ชั่วโมง
   });
 
-  return { success: true, department: staff.department };
+  return { success: true, department: selectedStaff.department };
 }
 
 /**
