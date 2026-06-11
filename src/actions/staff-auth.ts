@@ -15,8 +15,7 @@ export async function loginStaff(username: string, password: string) {
     .ilike('username', username.trim()); 
 
   if (error) {
-    console.error("DB Error:", error);
-    return { success: false, message: 'เกิดข้อผิดพลาดในการเชื่อมต่อฐานข้อมูล' };
+    return { success: false, message: `DB Connection Error: ${error.message}` };
   }
 
   if (!staffList || staffList.length === 0) {
