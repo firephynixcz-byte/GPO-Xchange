@@ -2,14 +2,27 @@
 
 import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
+import { cookies } from 'next/headers';
 
 export async function approveStaffByManager(staffId: string) {
   const supabase = await createClient();
 
-  // 1. ตรวจสอบ Session และ Role ก่อนเสมอ
-  // (สมมติว่ากิตมีระบบ checkSession ที่เช็ค role ใน cookie แล้ว)
+  // 1. ตรวจสอบสิทธิ์จาก Session ของคนที่กด
+  const cookieStore = await cookies();
+  const sessionCookie = cookieStore.get('staff_session');
   
-  // 2. อัปเดตสถานะในตาราง
+  if (!sessionCookie) {
+    return { success: false, error: "กรุณาเข้าสู่ระบบก่อนครับ" };
+  }
+
+  const session = JSON.parse(sessionCookie.value);
+
+  // 2. เช็คว่าคนกดเป็น Manager จริงไหม
+  if (session.role !== 'manager') {
+    return { success: false, error: "คุณไม่มีสิทธิ์อนุมัติพนักงานครับ" };
+  }
+
+  // 3. อัปเดตสถานะ
   const { error } = await supabase
     .from('staff_users')
     .update({ 
@@ -19,11 +32,10 @@ export async function approveStaffByManager(staffId: string) {
     .eq('id', staffId);
 
   if (error) {
-    console.error("Error approving staff:", error);
-    return { success: false, error: "ไม่สามารถอนุมัติสิทธิ์ได้" };
+    return { success: false, error: "เกิดข้อผิดพลาดในการเชื่อมต่อฐานข้อมูล" };
   }
 
-  // 3. สั่ง Refresh ข้อมูลในหน้า Dashboard
+  // 4. สั่ง Refresh
   revalidatePath('/admin/dashboard');
   return { success: true };
 }
