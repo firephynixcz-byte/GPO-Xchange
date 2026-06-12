@@ -1,105 +1,138 @@
 'use client';
-
-import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import Image from 'next/image';
 
 export default function HomePage() {
-  const router = useRouter();
+  const [activeTab, setActiveTab] = useState<'customer' | 'staff'>('customer');
+  const [loadingLogin, setLoadingLogin] = useState(false);
+
+  const isCustomer = activeTab === 'customer';
+
+  const handleLogin = () => {
+    setLoadingLogin(true);
+    setTimeout(() => setLoadingLogin(false), 1500);
+  };
 
   return (
-    <div className="min-h-screen bg-teal-100 font-sans">
-      
-      {/* 1. FIXED TOP HEADER */}
-      <header className="fixed top-0 left-0 w-full bg-white/85 backdrop-blur-lg border-b border-teal-100 z-50">
-        <div className="max-w-[1200px] mx-auto h-[48px] px-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="bg-gradient-to-br from-teal-800 to-teal-600 text-white font-black text-[12px] px-[10px] py-[4px] rounded-full shadow-[0_2px_8px_rgba(13,148,136,0.3)] tracking-wide">
-              GPO
-            </span>
-            <span className="text-teal-950 font-black text-sm tracking-wide hidden sm:block">
-              องค์การเภสัชกรรม สาขาภาคใต้
-            </span>
+    <div className="min-h-screen flex flex-col" style={{ background: '#f0f4f8' }}>
+
+      {/* ===== SECTION 1 : TOP BANNER ===== */}
+      <div className="w-full shadow-sm">
+        <Image
+          src="/banner-top.png"
+          alt="GPO Xchange Banner"
+          width={1440}
+          height={180}
+          className="w-full object-cover"
+          priority
+          onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+        />
+      </div>
+
+      {/* ===== SECTION 2+3 : GRAPHIC + AUTH ===== */}
+      <div className="flex flex-col md:flex-row flex-1 w-full px-4 md:px-16 py-8 gap-4">
+
+        {/* ── LEFT: GPO Graphic (เต็มกรอบ) ── */}
+        <div className="md:w-1/2 relative rounded-[2rem] overflow-hidden bg-[#e8f7f5]">
+          <Image
+            src="/gpo-xchange-graphic2.png"
+            alt="GPO Xchange Graphic"
+            fill
+            className="object-cover"
+            priority
+          />
+          {/* วงกลมตกแต่งให้ลอยอยู่บนรูป */}
+          <div className="absolute inset-0 z-10">
+            <div className="absolute -top-10 -left-10 w-48 h-48 rounded-full opacity-30" style={{ background: 'radial-gradient(circle, #38b27a, transparent)' }} />
+            <div className="absolute -bottom-10 -right-10 w-56 h-56 rounded-full opacity-20" style={{ background: 'radial-gradient(circle, #2d8cf0, transparent)' }} />
           </div>
         </div>
-      </header>
 
-      {/* 2. MAIN CONTENT */}
-      <main className="w-full px-4 md:px-20 py-10 pt-20 pb-16">
-        <div className="max-w-5xl mx-auto space-y-8">
-          
-          {/* Hero Section */}
-          <div className="bg-gradient-to-r from-green-700 to-blue-600 p-8 md:p-12 rounded-[2.5rem] text-center text-white shadow-2xl">
-            <h1 className="text-3xl md:text-5xl font-sans mb-4">GPO XCHANGE PORTAL PLATFORM</h1>
-            <p className="text-sm md:text-sm opacity-90 mb-6">ระบบรับคืนและแลกเปลี่ยนสินค้า One stop service พร้อม Tracking systems</p>
-            <div className="flex flex-wrap justify-center gap-3">
-              <span className="bg-white/20 backdrop-blur px-4 py-2 rounded-full text-[10px] md:text-xs font-medium flex items-center gap-2 border border-white/20">🏥 <span>รองรับทุกหน่วยงาน</span></span>
-              <span className="bg-white/20 backdrop-blur px-4 py-2 rounded-full text-[10px] md:text-xs font-medium flex items-center gap-2 border border-white/20">⚡ <span>ติดตามแบบ Real-time</span></span>
-              <span className="bg-white/20 backdrop-blur px-4 py-2 rounded-full text-[10px] md:text-xs font-medium flex items-center gap-2 border border-white/20">🔒 <span>รองรับ PDPA consent</span></span>
-            </div>
+        {/* ── RIGHT: Glassmorphism Auth Panel ── */}
+        <div
+          className="md:w-1/2 relative flex flex-col justify-center px-6 py-8 rounded-[2rem] overflow-hidden border border-white/20 shadow-2xl"
+          style={{ background: 'linear-gradient(135deg, rgba(13, 148, 136, 0.95), rgba(6, 78, 59, 0.95))' }}
+        >
+          <div className="absolute inset-0 bg-white/5 backdrop-blur-[2px]" />
+
+          {/* Portal Title */}
+          <div className="relative mb-8 text-center space-y-2">
+            <h1 className="text-3xl md:text-4xl font-black text-white tracking-tight drop-shadow-md">
+              GPO XCHANGE PORTAL
+            </h1>
+            <p className="text-teal-100/80 font-medium tracking-wider text-xs uppercase">องค์การเภสัชกรรม • สาขาภาคใต้</p>
           </div>
 
-          {/* ส่วนของลูกค้า */}
-          <section className="bg-white p-6 md:p-10 rounded-3xl shadow-sm border border-teal-200 mb-8">
-            <h2 className="text-base fontsans text-teal-950 mb-6 flex items-center gap-2 uppercase tracking-wider">ส่วนของลูกค้า (Customers)</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <a href="/status" className="group bg-teal-50 p-6 rounded-2xl border border-teal-100 hover:border-teal-400 shadow-sm transition-all hover:-translate-y-2 hover:shadow-xl flex items-center justify-between border-l-8 border-l-teal-500 md:border-l-transparent hover:md:border-l-teal-500">
-                <div className="flex items-center gap-4"><div className="bg-white p-3 rounded-xl text-xl shadow-sm">🔍</div><div><h3 className="font-black text-teal-950 text-sm">ตรวจสอบสถานะงาน</h3><p className="text-[11px] text-teal-700/70">ติดตามงานด้วยรหัสอ้างอิง</p></div></div>
-                <span className="text-teal-300 group-hover:text-teal-600 font-black text-xl">›</span>
-              </a>
-              
-              <button 
-                onClick={() => router.push('/auth')}
-                className="group bg-teal-50 p-6 rounded-2xl border border-teal-100 hover:border-red-400 shadow-sm transition-all hover:-translate-y-2 hover:shadow-xl flex items-center justify-between border-l-8 border-l-red-500 md:border-l-transparent hover:md:border-l-red-500 w-full text-left"
-              >
-                <div className="flex items-center gap-4"><div className="bg-white p-3 rounded-xl text-xl shadow-sm">📝</div><div><h3 className="font-black text-red-600 text-sm">ส่งแบบฟอร์มรับคืน/แลกเปลี่ยน</h3><p className="text-[11px] text-teal-700/70">แจ้งคืนสินค้าหรือแลกเปลี่ยน</p></div></div>
-                <span className="text-red-300 group-hover:text-red-600 font-black text-xl">›</span>
-              </button>
-
-              <a href="/rules" className="group bg-teal-50 p-6 rounded-2xl border border-teal-100 hover:border-blue-500 shadow-sm transition-all hover:-translate-y-2 hover:shadow-xl flex items-center justify-between border-l-8 border-l-blue-500">
-                <div className="flex items-center gap-4"><div className="bg-white p-3 rounded-xl text-xl shadow-sm">📋</div><div><h3 className="font-black text-teal-950 text-sm">หลักเกณฑ์การรับคืนสินค้า</h3><p className="text-[11px] text-teal-700/70">ตรวจสอบเงื่อนไขและนโยบาย</p></div></div>
-                <span className="text-blue-200 group-hover:text-blue-500 font-black text-xl">›</span>
-              </a>
-              <a href="/manual" className="group bg-teal-50 p-6 rounded-2xl border border-teal-100 hover:border-blue-500 shadow-sm transition-all hover:-translate-y-2 hover:shadow-xl flex items-center justify-between border-l-8 border-l-blue-500">
-                <div className="flex items-center gap-4"><div className="bg-white p-3 rounded-xl text-xl shadow-sm">📖</div><div><h3 className="font-black text-teal-950 text-sm">คู่มือการใช้งานระบบ</h3><p className="text-[11px] text-teal-700/70">Manual</p></div></div>
-                <span className="text-blue-200 group-hover:text-blue-500 font-black text-xl">›</span>
-              </a>
-            </div>
-          </section>
-
-          {/* ส่วนพนักงาน */}
-          <section className="bg-white p-6 md:p-10 rounded-3xl shadow-sm border border-teal-200">
-            <h2 className="text-base font-sans text-teal-950 mb-6 flex items-center gap-2 uppercase tracking-wider">ส่วนของพนักงาน GPO (GPO Staff)</h2>
-            <a href="/admin" className="group bg-teal-50 p-5 rounded-2xl border border-teal-100 hover:border-teal-500 shadow-sm transition-all hover:-translate-y-2 hover:shadow-xl flex items-center justify-between border-l-8 border-l-teal-500">
-              <div className="flex items-center gap-4"><div className="bg-white p-3 rounded-xl text-xl shadow-sm">👤</div><div><h3 className="font-black text-teal-950 text-sm">สำหรับพนักงาน GPO</h3><p className="text-[11px] text-teal-700/70">อัปเดตข้อมูล CSR / ขนส่ง / คลัง</p></div></div>
-              <span className="text-teal-300 group-hover:text-teal-600 font-black text-xl">›</span>
+          {/* Quick Access */}
+          <div className="relative flex gap-3 mb-6">
+            <a href="/tracking" className="flex-1 group bg-white/10 backdrop-blur border border-white/20 rounded-2xl p-3.5 text-center hover:bg-white/20 transition-all">
+              <div className="text-2xl mb-1.5">🔍</div>
+              <p className="text-white text-xs font-bold">ตรวจสอบสถานะ</p>
             </a>
-          </section>
+            <a href="/manual" className="flex-1 group bg-white/10 backdrop-blur border border-white/20 rounded-2xl p-3.5 text-center hover:bg-white/20 transition-all">
+              <div className="text-2xl mb-1.5">📖</div>
+              <p className="text-white text-xs font-bold">คู่มือการใช้งาน</p>
+            </a>
+          </div>
+
+          {/* Auth Card: Glass Style */}
+          <div className="relative bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl overflow-hidden border border-white/50">
+            <div className="grid grid-cols-2 bg-white/50 border-b border-slate-200">
+              {(['customer', 'staff'] as const).map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`py-3.5 text-sm font-bold transition-all border-b-2 ${
+                    activeTab === tab 
+                      ? (tab === 'customer' ? 'text-teal-700 border-teal-500 bg-white' : 'text-blue-700 border-blue-500 bg-white') 
+                      : 'text-slate-400 border-transparent hover:text-slate-600'
+                  }`}
+                >
+                  <span className="block text-base mb-0.5">{tab === 'customer' ? '🏠' : '👨‍⚕️'}</span>
+                  {tab === 'customer' ? 'ลูกค้า' : 'พนักงาน GPO'}
+                </button>
+              ))}
+            </div>
+
+            <div className="p-6 space-y-6">
+              {/* LOGIN */}
+              <div className="space-y-4">
+                <h2 className="text-sm font-black text-slate-800 flex items-center gap-2">
+                  <div className={`w-1 h-4 rounded-full ${isCustomer ? 'bg-teal-500' : 'bg-blue-500'}`} /> เข้าสู่ระบบ
+                </h2>
+                {isCustomer ? (
+                  <input className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-teal-400" placeholder="📧  อีเมล" />
+                ) : (
+                  <>
+                    <input className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-blue-400" placeholder="🪪  รหัสพนักงาน" />
+                    <input type="password" className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-blue-400" placeholder="🔑  รหัสผ่าน" />
+                  </>
+                )}
+                <button onClick={handleLogin} disabled={loadingLogin} className={`w-full py-3 rounded-xl font-bold text-white text-sm shadow-md transition-all ${isCustomer ? 'bg-teal-700' : 'bg-blue-800'}`}>
+                  {loadingLogin ? '⏳ กำลังดำเนินการ...' : 'เข้าสู่ระบบ →'}
+                </button>
+              </div>
+
+              {/* REGISTER */}
+              <div className="pt-6 border-t border-dashed border-slate-200">
+                <h2 className="text-sm font-black text-slate-800 mb-3 flex items-center gap-2">
+                  <div className="w-1 h-4 rounded-full bg-orange-400" /> ลงทะเบียนใช้งานครั้งแรก
+                </h2>
+                <button
+                  onClick={() => window.location.href = isCustomer ? '/auth/customer-register' : '/auth/staff-register'}
+                  className="w-full py-3 rounded-xl font-bold text-white text-sm bg-gradient-to-r from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-600 shadow-md transition-all active:scale-[0.98]"
+                >
+                  {isCustomer ? '✨ ลงทะเบียนลูกค้า' : '✨ ลงทะเบียนพนักงาน'}
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-      </main>
+      </div>
 
       {/* FOOTER */}
-      <footer className="w-full bg-[#0a0f17] border-t border-[#1e293b] pt-12 pb-8 px-6 md:px-16 text-[#94a3b8]">
-        <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-12 max-w-5xl mx-auto">
-          <div className="space-y-4">
-            <div className="flex items-center gap-3"><span className="bg-[#0d9488]/20 text-[#2dd4bf] border border-[#0d9488]/40 text-[10px] font-black px-3 py-1 rounded tracking-wider">GPO SOUTHERN</span><span className="text-white font-black text-sm">Xchange Portal</span></div>
-            <div className="bg-[#111827] border border-[#1e293b] p-5 rounded-2xl w-full"><div className="text-[10px] text-[#2dd4bf] font-black uppercase mb-1">Architecture Model</div><div className="text-white text-sm font-black mb-2 flex items-center gap-2">🗺️ แผนผังโครงสร้างระบบ Xchange</div><p className="text-[11px] leading-relaxed mb-4 text-[#2dd4bf]">คลิกเพื่อเปิดดูสรุปฟังก์ชันหลัก วิสัยทัศน์ และกระบวนการ Automation ทั้งหมดบนหน้าจอ</p><button className="bg-[#1e40af] text-white text-[11px] font-black px-4 py-2 rounded-lg hover:bg-[#1e3a8a] transition-all w-full">เปิดดูผังระบบ 🔍</button></div>
-          </div>
-          <div>
-            <h3 className="text-white font-black text-sm mb-6 flex items-center gap-2">🎧 ช่องทางการติดต่อ</h3>
-            <div className="space-y-4 text-[12px] text-[#94a3b8]">
-              <div className="flex gap-3"><span className="text-[#2dd4bf] mt-0.5">📍</span><p className="leading-5">องค์การเภสัชกรรม สาขาภาคใต้ เลขที่ 90 ถนนนิพัทธ์สงเคราะห์ 5 ต.คอหงส์ อ.หาดใหญ่ จ.สงขลา 90110</p></div>
-              <div className="flex gap-3 items-center"><span className="text-[#2dd4bf]">📞</span><span>โทรศัพท์: <a href="tel:074230547" className="text-[#2dd4bf] hover:underline">074-230547</a></span></div>
-              <div className="flex gap-3 items-center"><span className="text-[#2dd4bf]">💬</span><span>Line Official: <a href="https://line.me/R/ti/p/%40gpoofficial" className="text-[#2dd4bf] hover:underline">@gpoofficial</a></span></div>
-              <div className="flex gap-3 items-center"><span className="text-[#2dd4bf]">✉️</span><span>Email: <a href="mailto:gposouthhdy@gmail.com" className="text-[#2dd4bf] hover:underline">gposouthhdy@gmail.com</a></span></div>
-            </div>
-          </div>
-          <div>
-            <h3 className="text-white font-black text-sm mb-6 flex items-center gap-2">🕒 เวลาทำการ</h3>
-            <div className="space-y-4 text-[12px] text-[#94a3b8]">
-              <div className="flex gap-3"><span className="text-[#2dd4bf] mt-0.5">💼</span><p className="leading-5">ติดต่อสำนักงาน: วันจันทร์ - วันศุกร์ เวลา 08:00 น. - 16:00 น. (เว้นวันหยุดราชการ)</p></div>
-              <div className="flex gap-3"><span className="text-[#2dd4bf] mt-0.5">🌐</span><p className="leading-5">ระบบบริการออนไลน์และ Tracking: เปิดใช้งานตลอด 24 ชั่วโมง</p></div>
-            </div>
-          </div>
-        </div>
+      <footer className="w-full py-5 px-6 text-center text-slate-500 text-xs">
+        © 2026 องค์การเภสัชกรรม • สาขาภาคใต้ &nbsp;|&nbsp; 🔒 PDPA Compliant &nbsp;|&nbsp; v2.0
       </footer>
     </div>
   );
